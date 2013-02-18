@@ -7,28 +7,30 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.telecom.view.CirclePageIndicator;
 
-public class ViewpagerActivity extends FragmentActivity {
-    TestFragmentAdapter mAdapter;
+public class AppliactionCategoryActivity extends FragmentActivity {
+    AdvertisementFragmentAdapter mAdapter;
     ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // The look of this sample is set via a style in the manifest
-        setContentView(R.layout.simple_circles);
+        setContentView(R.layout.application_category_layout);
 
-        mAdapter = new TestFragmentAdapter(getSupportFragmentManager());
+        mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager());
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -38,18 +40,20 @@ public class ViewpagerActivity extends FragmentActivity {
         indicator.setBackgroundColor(Color.BLACK);
     }
 
-    class TestFragmentAdapter extends FragmentPagerAdapter {
-        protected final String[] CONTENT = new String[] { "第一页", "第二页", "第三页", "第四页", };
+    class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
+        protected final int[] CONTENT = new int[] { R.drawable.type1, R.drawable.type2,
+                R.drawable.type3, R.drawable.type4, R.drawable.type5, R.drawable.type6,
+                R.drawable.type7, R.drawable.type8 };
 
         private int mCount = CONTENT.length;
 
-        public TestFragmentAdapter(FragmentManager fm) {
+        public AdvertisementFragmentAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return TestFragment.newInstance(CONTENT[position % CONTENT.length]);
+            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length]);
         }
 
         @Override
@@ -65,45 +69,36 @@ public class ViewpagerActivity extends FragmentActivity {
         }
     }
 
-    public final static class TestFragment extends Fragment {
-        private static final String KEY_CONTENT = "TestFragment:Content";
+    public final static class AdvertisementFragment extends Fragment {
+        private static final String KEY_CONTENT = "AdvertisementFragment:Content";
 
-        public static TestFragment newInstance(String content) {
-            TestFragment fragment = new TestFragment();
+        private int mContent;
+
+        public static AdvertisementFragment newInstance(int content) {
+            AdvertisementFragment fragment = new AdvertisementFragment();
 
             fragment.mContent = content;
 
             return fragment;
         }
 
-        private String mContent = "???";
-
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
-                mContent = savedInstanceState.getString(KEY_CONTENT);
+                mContent = savedInstanceState.getInt(KEY_CONTENT);
             }
 
-            TextView text = new TextView(getActivity());
-            text.setGravity(Gravity.CENTER);
-            text.setText(mContent);
-            text.setTextSize(20 * getResources().getDisplayMetrics().density);
-            text.setPadding(20, 20, 20, 20);
+            ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
+            view.setImageResource(mContent);
 
-            LinearLayout layout = new LinearLayout(getActivity());
-            layout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
-            layout.setGravity(Gravity.CENTER);
-            layout.addView(text);
-
-            return layout;
+            return view;
         }
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
-            outState.putString(KEY_CONTENT, mContent);
+            outState.putInt(KEY_CONTENT, mContent);
         }
     }
 }

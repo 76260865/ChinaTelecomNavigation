@@ -16,6 +16,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="10dip"
-        pageindcator:radius="20dip" />
+        pageindcator:radius="10dip" />
 
 </LinearLayout>
