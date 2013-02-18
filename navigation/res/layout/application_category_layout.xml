@@ -23,11 +23,12 @@
             android:padding="10dip"
             pageindcator:radius="5dip" />
     </RelativeLayout>
-
+
     <ImageView
         android:id="@+id/img_user_guide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onImgUserGuideClick"
         android:src="@drawable/teaching_bg" />
 
 </LinearLayout>

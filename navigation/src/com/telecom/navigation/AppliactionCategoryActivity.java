@@ -1,5 +1,6 @@
 package com.telecom.navigation;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,11 @@ public class AppliactionCategoryActivity extends FragmentActivity {
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         indicator.setBackgroundColor(Color.BLACK);
+    }
+
+    public void onImgUserGuideClick(View view) {
+        Intent intent = new Intent(this, UseGuideCategory.class);
+        startActivity(intent);
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {

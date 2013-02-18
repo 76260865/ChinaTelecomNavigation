@@ -30,6 +30,7 @@
         <activity android:name=".AdvertisementActivity" />
         <activity android:name=".AppliactionCategoryActivity" />
         <activity android:name=".AuthenticationActivity" />
+        <activity android:name=".UseGuideCategory" />
     </application>
 
 </manifest>
