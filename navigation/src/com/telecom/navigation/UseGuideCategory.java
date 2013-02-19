@@ -12,7 +12,7 @@ public class UseGuideCategory extends Activity {
     public static final String EXTRA_KEY_TYPE = "extra_key_type";
 
     /* package */enum GuideType {
-        PHONE, MAIL, INTERNET, CAMERA, MEDIA, ALBUM
+        PHONE, SMS, INTERNET, CAMERA, MEDIA, ALBUM
     };
 
     @Override
@@ -31,8 +31,8 @@ public class UseGuideCategory extends Activity {
         case R.id.img_type_phone:
             type = GuideType.PHONE;
             break;
-        case R.id.img_type_mail:
-            type = GuideType.MAIL;
+        case R.id.img_type_sms:
+            type = GuideType.SMS;
             break;
         case R.id.img_type_internet:
             type = GuideType.INTERNET;

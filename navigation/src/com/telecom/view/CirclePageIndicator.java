@@ -12,7 +12,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
 public class CirclePageIndicator extends View implements PageIndicator {

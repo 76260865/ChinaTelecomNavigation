@@ -89,7 +89,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
             }
 
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
-            view.setImageResource(mContent);
+            view.setBackgroundResource(mContent);
 
             return view;
         }

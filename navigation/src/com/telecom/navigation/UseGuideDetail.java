@@ -40,7 +40,7 @@ public class UseGuideDetail extends FragmentActivity {
         case PHONE:
             drawables = new int[] { R.drawable.teach_tele_01, R.drawable.teach_tele_02 };
             break;
-        case MAIL:
+        case SMS:
             drawables = new int[] { R.drawable.teach_sms_01, R.drawable.teach_sms_02 };
             break;
         case INTERNET:

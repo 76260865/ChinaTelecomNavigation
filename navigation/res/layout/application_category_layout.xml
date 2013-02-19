@@ -20,7 +20,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="28dip"
+            android:layout_marginBottom="@dimen/pade_indicator_margin_bottom"
             android:background="@android:color/transparent"
             android:padding="10dip"
             pageindcator:radius="5dip" />
@@ -30,7 +30,7 @@
         android:id="@+id/img_user_guide"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onImgUserGuideClick"
-        android:src="@drawable/teaching_bg" />
+        android:background="@drawable/teaching_bg"
+        android:onClick="onImgUserGuideClick" />
 
 </LinearLayout>

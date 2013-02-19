@@ -2,5 +2,7 @@
 <resources>
 
     <dimen name="img_avatar_height">150dip</dimen>
+    <dimen name="pade_indicator_margin_bottom">18dip</dimen>
+    <dimen name="avatar_margin">50dip</dimen>
 
 </resources>

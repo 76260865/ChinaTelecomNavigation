@@ -1,13 +1,16 @@
 package com.telecom.navigation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class EvaluateActivity extends BaseActivity {
+public class EvaluateActivity extends Activity {
 
     private View mLinearBottom;
     private RatingBar mRatingBar;
@@ -16,6 +19,10 @@ public class EvaluateActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        
         setContentView(R.layout.evaluate_activity);
 
         mRatingBar = (RatingBar) findViewById(R.id.ratingbar);
