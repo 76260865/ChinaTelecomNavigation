@@ -39,7 +39,7 @@ public class AdvertisementActivity extends FragmentActivity {
 
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-        indicator.setBackgroundColor(Color.BLACK);
+        indicator.getBackground().setAlpha(0);
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
@@ -90,7 +90,7 @@ public class AdvertisementActivity extends FragmentActivity {
             }
 
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
-            view.setImageResource(mContent);
+            view.setBackgroundResource(mContent);
 
             if (mContent == R.drawable.ad3) {
                 view.setOnClickListener(new OnClickListener() {

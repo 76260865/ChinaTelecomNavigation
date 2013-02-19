@@ -1,12 +1,6 @@
 package com.telecom.navigation;
 
-import com.telecom.navigation.AdvertisementActivity.AdvertisementFragment;
-import com.telecom.navigation.AdvertisementActivity.AdvertisementFragmentAdapter;
-import com.telecom.view.CirclePageIndicator;
-
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
+import com.telecom.navigation.UseGuideCategory.GuideType;
+import com.telecom.view.CirclePageIndicator;
+
 public class UseGuideDetail extends FragmentActivity {
-    AdvertisementFragmentAdapter mAdapter;
-    ViewPager mPager;
+    private AdvertisementFragmentAdapter mAdapter;
+    private ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +31,54 @@ public class UseGuideDetail extends FragmentActivity {
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.use_guide_detail);
 
-        mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager());
+        Intent intent = getIntent();
+        int ordinal = intent.getExtras().getInt(UseGuideCategory.EXTRA_KEY_TYPE,
+                GuideType.PHONE.ordinal());
+        GuideType type = GuideType.values()[ordinal];
+        int[] drawables;
+        switch (type) {
+        case PHONE:
+            drawables = new int[] { R.drawable.teach_tele_01, R.drawable.teach_tele_02 };
+            break;
+        case MAIL:
+            drawables = new int[] { R.drawable.teach_sms_01, R.drawable.teach_sms_02 };
+            break;
+        case INTERNET:
+            drawables = new int[] { R.drawable.teach_internet_01, R.drawable.teach_internet_02 };
+            break;
+        case CAMERA:
+            drawables = new int[] { R.drawable.teach_camera_01, R.drawable.teach_camera_02 };
+            break;
+        case MEDIA:
+            drawables = new int[] { R.drawable.teach_media_01, R.drawable.teach_media_02 };
+            break;
+        case ALBUM:
+            drawables = new int[] { R.drawable.teach_camera_01, R.drawable.teach_camera_01 };
+            break;
+        default:
+            drawables = new int[] { R.drawable.teach_tele_01, R.drawable.teach_tele_02 };
+            break;
+        }
+
+        mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager(), drawables);
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-        indicator.setBackgroundColor(Color.BLACK);
+        indicator.getBackground().setAlpha(0);
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
-        protected final int[] CONTENT = new int[] { R.drawable.ad1, R.drawable.ad2, R.drawable.ad3 };
+        protected int[] CONTENT;
 
-        private int mCount = CONTENT.length;
+        private int mCount;
 
-        public AdvertisementFragmentAdapter(FragmentManager fm) {
+        public AdvertisementFragmentAdapter(FragmentManager fm, int[] content) {
             super(fm);
+            CONTENT = content;
+            mCount = CONTENT.length;
         }
 
         @Override
@@ -92,19 +119,10 @@ public class UseGuideDetail extends FragmentActivity {
                 mContent = savedInstanceState.getInt(KEY_CONTENT);
             }
 
-            ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
-            view.setImageResource(mContent);
+            View view = inflater.inflate(R.layout.use_guide_detail_item, null);
+            ImageView imgItem = (ImageView) view.findViewById(R.id.img_guide_detail_item);
+            imgItem.setImageResource(mContent);
 
-            if (mContent == R.drawable.ad3) {
-                view.setOnClickListener(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), AuthenticationActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
             return view;
         }
 

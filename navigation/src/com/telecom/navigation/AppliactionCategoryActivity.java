@@ -38,7 +38,7 @@ public class AppliactionCategoryActivity extends FragmentActivity {
 
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-        indicator.setBackgroundColor(Color.BLACK);
+        indicator.getBackground().setAlpha(0);
     }
 
     public void onImgUserGuideClick(View view) {
