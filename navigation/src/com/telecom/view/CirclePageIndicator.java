@@ -216,28 +216,6 @@ public class CirclePageIndicator extends View implements PageIndicator {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            final int count = mViewPager.getAdapter().getCount();
-            final int longSize = (mOrientation == HORIZONTAL) ? getWidth() : getHeight();
-            final float halfLongSize = longSize / 2;
-            final float halfCircleLongSize = (count * 3 * mRadius) / 2;
-            final float pointerValue = (mOrientation == HORIZONTAL) ? event.getX() : event.getY();
-
-            if ((mCurrentPage > 0) && (pointerValue < halfLongSize - halfCircleLongSize)) {
-                setCurrentItem(mCurrentPage - 1);
-                return true;
-            } else if ((mCurrentPage < count - 1)
-                    && (pointerValue > halfLongSize + halfCircleLongSize)) {
-                setCurrentItem(mCurrentPage + 1);
-                return true;
-            }
-        }
-
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     public void setViewPager(ViewPager view) {
         if (view.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");

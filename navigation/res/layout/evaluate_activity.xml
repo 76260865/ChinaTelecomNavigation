@@ -27,18 +27,12 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/img_avatar_height"
             android:layout_margin="50dip"
-            android:src="@drawable/body_icon" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="zhudian" />
+            android:src="@drawable/heart" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/authentication_txt" />
+            android:src="@drawable/thanks_text" />
     </LinearLayout>
 
     <LinearLayout
@@ -50,60 +44,52 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dip"
             android:layout_margin="10dip"
             android:background="@drawable/mask"
             android:orientation="vertical" >
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/txt_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="5dip"
-                android:text="@string/txt_instructor" />
+                android:layout_marginBottom="2dip"
+                android:layout_marginLeft="16dip"
+                android:layout_marginTop="8dip"
+                android:text="@string/txt_welcome_evaluate"
+                android:textSize="15dip" />
+
+            <RatingBar
+                android:id="@+id/ratingbar"
+                style="@style/roomRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="3dip"
+                android:numStars="4"
+                android:rating="3" />
 
             <LinearLayout
-                android:id="@+id/linear_input_number"
+                android:id="@+id/linear_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dip"
-                android:orientation="horizontal" >
-
-                <EditText
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/hint_txt_reg_num"
-                    android:singleLine="true" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/btn"
-                    android:onClick="onBtnAuthClick"
-                    android:text="@string/btn_identification_txt"
-                    android:textSize="15dip" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linear_auth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dip"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:visibility="gone" >
 
-                <TextView
-                    android:layout_width="0dip"
+                <Button
+                    android:layout_width="72dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="天翼辅导员:秀秀为您服务" />
+                    android:layout_marginRight="20dip"
+                    android:background="@drawable/btn"
+                    android:text="@string/btn_exit_txt"
+                    android:textSize="15dip" />
 
                 <Button
-                    android:layout_width="wrap_content"
+                    android:layout_width="120dip"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn"
-                    android:onClick="onBtnNextClick"
-                    android:text="@string/btn_next_txt"
+                    android:text="@string/btn_back_to_main_txt"
                     android:textSize="15dip" />
             </LinearLayout>
         </LinearLayout>

@@ -2,23 +2,17 @@ package com.telecom.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
-public class AuthenticationActivity extends FragmentActivity {
+public class AuthenticationActivity extends BaseActivity {
     private View linear_input_number;
     private View linear_auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.authentication_activity);

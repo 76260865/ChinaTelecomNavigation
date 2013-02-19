@@ -24,11 +24,14 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_margin="10dip"
             android:drawableLeft="@drawable/arrowback"
             android:gravity="center"
-            android:text="拍照"
+            android:onClick="onTxtBackClick"
+            android:text="@string/txt_camera"
             android:textColor="@android:color/black"
             android:textSize="18dip"
             android:textStyle="bold" />
@@ -39,9 +42,11 @@
             android:background="@drawable/line_v" />
 
         <TextView
+            android:id="@+id/txt_description"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照拍照"
+            android:layout_margin="10dip"
+            android:text="@string/txt_camera_description"
             android:textColor="@android:color/black"
             android:textSize="12dip" />
     </LinearLayout>

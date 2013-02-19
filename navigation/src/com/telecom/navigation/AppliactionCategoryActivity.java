@@ -1,32 +1,25 @@
 package com.telecom.navigation;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.telecom.view.CirclePageIndicator;
 
-public class AppliactionCategoryActivity extends FragmentActivity {
+public class AppliactionCategoryActivity extends BaseActivity {
     AdvertisementFragmentAdapter mAdapter;
     ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.application_category_layout);
@@ -42,7 +35,7 @@ public class AppliactionCategoryActivity extends FragmentActivity {
     }
 
     public void onImgUserGuideClick(View view) {
-        Intent intent = new Intent(this, UseGuideCategory.class);
+        Intent intent = new Intent(this, UserGuideActivity.class);
         startActivity(intent);
     }
 
