@@ -6,22 +6,34 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/layout_download"
         android:layout_width="match_parent"
-        android:layout_height="44dip"
-        android:background="@drawable/titlebar_bg"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/text2" />
+            android:layout_height="44dip"
+            android:background="@drawable/titlebar_bg"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/text2" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lst_app"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="#00000000" >
+        </ListView>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lst_app"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:cacheColorHint="#00000000" >
-    </ListView>
+    <include
+        android:id="@+id/layout_detail"
+        layout="@layout/application_detail_layout"
+        android:visibility="gone" />
 
 </LinearLayout>

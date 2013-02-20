@@ -69,13 +69,14 @@
             android:orientation="vertical" >
 
             <Button
+                android:id="@+id/btn_start_download"
                 android:layout_width="125dip"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn"
                 android:onClick="onBtnDownloadClick"
                 android:text="@string/btn_start_download_txt"
                 android:textColor="@android:color/white"
-                android:textSize="15dip" />
+                android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
 

@@ -1,35 +1,97 @@
 package com.telecom.navigation;
 
+import java.util.ArrayList;
+
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.telecom.model.AppInfo;
 
 public class ApplicationDownloadActivity extends BaseActivity {
+
+    private DownloadCompleteReceiver mReceiver;
+
+    private MyAdapter mAdapater;
+
+    private ArrayList<AppInfo> mAppInfoList = new ArrayList<AppInfo>();
+
+    private DownloadManager mDownloadManager;
+
+    private View mLayoutDownload;
+
+    private View mLayoutDetail;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.application_download_layout);
 
-        ListView listView = (ListView) findViewById(R.id.lst_app);
-        MyAdapter adapater = new MyAdapter(this);
-        listView.setAdapter(adapater);
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        mReceiver = new DownloadCompleteReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ApplicationDownloadActivity.this,
-                        ApplicationDetailActivity.class);
-                startActivity(intent);
-            }
-        });
+        mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+
+        ListView listView = (ListView) findViewById(R.id.lst_app);
+        mAdapater = new MyAdapter(this);
+        listView.setAdapter(mAdapater);
+        listView.setOnItemClickListener(mOnItemClickListener);
+
+        mLayoutDownload = findViewById(R.id.layout_download);
+        mLayoutDetail = findViewById(R.id.layout_detail);
+
+        for (int i = 0; i < 5; i++) {
+            AppInfo info = new AppInfo();
+            mAppInfoList.add(info);
+        }
+    }
+
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mLayoutDownload.setVisibility(View.GONE);
+            mLayoutDetail.setVisibility(View.VISIBLE);
+            Button btnStartDownload = (Button) findViewById(R.id.btn_start_download);
+            btnStartDownload.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    mLayoutDetail.setVisibility(View.GONE);
+                    mLayoutDownload.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapater.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
+        super.onDestroy();
     }
 
     public class MyAdapter extends BaseAdapter {
@@ -43,7 +105,7 @@ public class ApplicationDownloadActivity extends BaseActivity {
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
-            return 5;
+            return mAppInfoList.size();
         }
 
         @Override
@@ -59,41 +121,75 @@ public class ApplicationDownloadActivity extends BaseActivity {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            // ViewHolder holder = null;
-            // if (convertView == null) {
-            //
-            // holder = new ViewHolder();
-            //
+        public View getView(final int position, View convertView, ViewGroup parent) {
             convertView = mInflater.inflate(R.layout.applocation_list_item_layout, null);
-            // holder.img = (ImageView) convertView.findViewById(R.id.img);
-            // holder.title = (TextView) convertView.findViewById(R.id.title);
-            // holder.info = (TextView) convertView.findViewById(R.id.info);
-            // holder.viewBtn = (Button)
-            // convertView.findViewById(R.id.view_btn);
-            // convertView.setTag(holder);
-            //
-            // } else {
-            //
-            // holder = (ViewHolder) convertView.getTag();
+
+            final Button btnDownload = (Button) convertView.findViewById(R.id.btn_download);
+
+            // final AppInfo info = mAppInfoList.get(position);
+            // final int status =
+            // ApkFileUtil.checkApkFileStatuts(getApplicationContext(),
+            // info.getVersionCode(), info.getPackageName());
+            // if (status == ApkFileUtil.INSTALLED) {
+            // btnDownload.setText("运行");
+            // } else if (info.isDownloadComplete()) {
+            // btnDownload.setText("安装");
             // }
             //
-            // holder.img.setBackgroundResource((Integer)
-            // mData.get(position).get("img"));
-            // holder.title.setText((String) mData.get(position).get("title"));
-            // holder.info.setText((String) mData.get(position).get("info"));
-            //
-            // holder.viewBtn.setOnClickListener(new View.OnClickListener() {
-            //
+            // btnDownload.setOnClickListener(new View.OnClickListener() {
             // @Override
             // public void onClick(View v) {
-            // showInfo();
+            // if (status == ApkFileUtil.INSTALLED) {
+            // ApkFileUtil.launchApp(getApplicationContext(),
+            // info.getPackageName());
+            // } else if (info.isDownloadComplete()) {
+            // ApkFileUtil.installApkFile(getApplicationContext(), "");
+            // } else {
+            // downloadApk(position);
+            // }
             // }
             // });
 
             return convertView;
         }
+    }
 
+    private void downloadApk(int position) {
+
+        // 创建下载请求
+        DownloadManager.Request down = new DownloadManager.Request(
+                Uri.parse("http://s1.bdstatic.com/r/www/img/i-1.0.0.png"));
+        // 设置允许使用的网络类型，这里是移动网络和wifi都可以
+        Environment.getExternalStoragePublicDirectory("'");
+        down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        // 设置下载后文件存放的位置
+        down.setDestinationInExternalFilesDir(this, null, "123.png");
+        // 将下载请求放入队列
+        long downloadId = mDownloadManager.enqueue(down);
+
+        AppInfo info = mAppInfoList.get(position);
+        info.setDownloadId(downloadId);
+
+        // manager.remove(downloadId);
+    }
+
+    public class DownloadCompleteReceiver extends BroadcastReceiver {
+        private static final String TAG = "DownloadCompleteReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                Log.d(TAG, " download complete! id : " + downId);
+                Toast.makeText(context, "download complete", 1).show();
+                for (AppInfo info : mAppInfoList) {
+                    if (info.getDownloadId() == downId) {
+                        info.setDownloadComplete(true);
+                        break;
+                    }
+                }
+                mAdapater.notifyDataSetChanged();
+            }
+        }
     }
 }
