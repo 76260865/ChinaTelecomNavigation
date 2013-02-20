@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/maket_background"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:background="@drawable/titlebar_bg"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/text2" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:text="zhudian"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="253dip"
+                android:layout_height="202dip"
+                android:layout_gravity="center"
+                android:background="@drawable/app_detail_background"
+                android:src="@drawable/app_detail_background" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dip"
+                android:text="zhudian"
+                android:textColor="@android:color/black"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_bg_no_mask"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dip"
+            android:layout_margin="10dip"
+            android:background="@drawable/mask"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <Button
+                android:layout_width="125dip"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn"
+                android:onClick="onBtnDownloadClick"
+                android:text="@string/btn_start_download_txt"
+                android:textColor="@android:color/white"
+                android:textSize="15dip" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

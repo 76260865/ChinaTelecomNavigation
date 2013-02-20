@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -91,6 +92,14 @@ public class AppliactionCategoryActivity extends BaseActivity {
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
             view.setBackgroundResource(mContent);
 
+            view.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), ApplicationDownloadActivity.class);
+                    startActivity(intent);
+                }
+            });
             return view;
         }
 

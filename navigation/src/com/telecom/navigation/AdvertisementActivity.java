@@ -1,6 +1,11 @@
 package com.telecom.navigation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +16,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.telecom.util.ApkFileUtil;
 import com.telecom.view.CirclePageIndicator;
 
 public class AdvertisementActivity extends BaseActivity {
@@ -92,6 +99,19 @@ public class AdvertisementActivity extends BaseActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), AuthenticationActivity.class);
                         startActivity(intent);
+//FIXME: for test
+//                        PackageInfo packageInfo = ApkFileUtil.getPackageInfo(getActivity(),
+//                                "/sdcard/SplashScreen.apk");
+//                        Toast.makeText(getActivity(), "packageInfo:"+packageInfo, 1).show();
+//                        if (packageInfo != null) {
+//                            String packageName = packageInfo.packageName;
+//                            Toast.makeText(getActivity(), "packageName:"+packageName, 1).show();
+//                            int i = ApkFileUtil.checkApkFileStatuts(getActivity(),
+//                                    packageInfo.versionCode, packageName);
+//                            if (i == 100) {
+//                                ApkFileUtil.launchApp(getActivity(), packageName);
+//                            }
+//                        }
                     }
                 });
             }
