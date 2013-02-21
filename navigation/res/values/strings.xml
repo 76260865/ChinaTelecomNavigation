@@ -28,5 +28,6 @@
     <string name="btn_back_to_main_txt">返回主菜单</string>
     <string name="btn_download_txt">下载</string>
     <string name="btn_start_download_txt">开始下载</string>
+    <string name="txt_connect_network">请连接网络</string>
 
 </resources>

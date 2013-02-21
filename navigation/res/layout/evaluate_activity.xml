@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/authentication_txt" />
+            android:src="@drawable/text3" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,12 +47,14 @@
             android:layout_height="100dip"
             android:layout_margin="20dip"
             android:background="@drawable/mask"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="left"
                 android:layout_marginBottom="2dip"
                 android:layout_marginLeft="16dip"
                 android:layout_marginTop="2dip"
@@ -86,6 +88,7 @@
                     android:textSize="13sp" />
 
                 <Button
+                    android:id="@+id/btn_back_to_main"
                     android:layout_width="120dip"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn"

@@ -30,10 +30,14 @@
             android:src="@drawable/body_icon" />
 
         <TextView
+            android:id="@+id/txt_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dip"
             android:gravity="center"
-            android:text="zhudian" />
+            android:text="zhudian"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
 
         <ImageView
             android:layout_width="match_parent"
@@ -53,38 +57,45 @@
             android:layout_height="120dip"
             android:layout_margin="10dip"
             android:background="@drawable/mask"
+            android:gravity="center"
             android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
-                android:paddingTop="5dip"
-                android:text="@string/txt_instructor"
-                android:textColor="@android:color/white" />
 
             <LinearLayout
                 android:id="@+id/linear_input_number"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dip"
-                android:orientation="horizontal" >
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
-                <EditText
-                    android:layout_width="0dip"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="@string/hint_txt_reg_num"
-                    android:singleLine="true" />
+                    android:layout_marginLeft="10dip"
+                    android:paddingTop="5dip"
+                    android:text="@string/txt_instructor"
+                    android:textColor="@android:color/white" />
 
-                <Button
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn"
-                    android:onClick="onBtnAuthClick"
-                    android:text="@string/btn_identification_txt"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dip" />
+                    android:layout_margin="10dip"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_txt_reg_num"
+                        android:singleLine="true" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn"
+                        android:onClick="onBtnAuthClick"
+                        android:text="@string/btn_identification_txt"
+                        android:textColor="@android:color/white"
+                        android:textSize="15dip" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -96,6 +107,7 @@
                 android:visibility="gone" >
 
                 <TextView
+                    android:id="@+id/txt_master"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

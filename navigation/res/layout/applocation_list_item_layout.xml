@@ -33,6 +33,7 @@
             android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dip"
             android:text="adsadasdadsadsadsdadsadsadasdadsadsadasdadsadsadasdadsadsadasdads"
             android:textColor="@android:color/black"
             android:textSize="13sp" />
