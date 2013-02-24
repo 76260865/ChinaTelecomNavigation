@@ -18,6 +18,46 @@ public class AppInfo {
 
     private boolean mDownloadComplete;
 
+    private String mAppIconUri;
+
+    private String mAppId;
+
+    private String mDownLink;
+
+    private String mAppScreen;
+
+    public String getAppIconUri() {
+        return mAppIconUri;
+    }
+
+    public void setAppIconUri(String appIconUri) {
+        this.mAppIconUri = appIconUri;
+    }
+
+    public String getAppId() {
+        return mAppId;
+    }
+
+    public void setAppId(String appId) {
+        this.mAppId = appId;
+    }
+
+    public String getDownLink() {
+        return mDownLink;
+    }
+
+    public void setDownLink(String downLink) {
+        this.mDownLink = downLink;
+    }
+
+    public String getAppScreen() {
+        return mAppScreen;
+    }
+
+    public void setAppScreen(String appScreen) {
+        this.mAppScreen = appScreen;
+    }
+
     public Bitmap getIcon() {
         return mIcon;
     }

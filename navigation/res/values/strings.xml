@@ -21,6 +21,7 @@
     <string name="txt_album">媒体库</string>
     <string name="txt_album_description">媒体库包括：音乐、视频、录音、图库和更新。点击进入图库，您可以进行管理和浏览图片的操作</string>
     <string name="txt_menu_close">结束评分</string>
+    <string name="txt_menu_exit">结束</string>
     <string name="txt_menu_about">关于我们</string>
     <string name="txt_welcome_evaluate">请对讲解员评分</string>
     <string name="txt_thanks_evaluate">谢谢评分！</string>

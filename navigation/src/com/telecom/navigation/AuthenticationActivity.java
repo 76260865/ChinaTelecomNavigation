@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.telecom.model.Customer;
+import com.telecom.model.Master;
+import com.telecom.util.JsonUtil;
+
 public class AuthenticationActivity extends BaseActivity {
     private View mLayoutInputNumber;
 
@@ -22,6 +26,10 @@ public class AuthenticationActivity extends BaseActivity {
     private String mPhoneNum;
 
     private MyAsyncTask mMyAsyncTask;
+
+    private TelephonyManager mTelephonyMgr;
+
+    private String mImsi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +51,19 @@ public class AuthenticationActivity extends BaseActivity {
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);
         mTxtMaster = (TextView) findViewById(R.id.txt_master);
 
-        mMyAsyncTask = new MyAsyncTask(mTxtUserName);
-        mMyAsyncTask.execute();
+        mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mImsi = mTelephonyMgr.getSubscriberId();
+
+        IMSITask imsiTask = new IMSITask(mTxtUserName);
+        imsiTask.execute();
     }
 
     public void onBtnAuthClick(View v) {
-        mMyAsyncTask = new MyAsyncTask(mTxtMaster);
-        mMyAsyncTask.execute();
-
         mLayoutInputNumber.setVisibility(View.GONE);
         mLayoutLinearAuth.setVisibility(View.VISIBLE);
+
+        mMyAsyncTask = new MyAsyncTask(mTxtUserName);
+        mMyAsyncTask.execute();
     }
 
     @Override
@@ -88,8 +99,29 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            // mTxtMaster.setText(result);
+            Master master = JsonUtil.getMasterInfo();
+            mTxtMaster
+                    .setText("天翼辅导员：" + master.getUserName() + "工号" + master.getUserId() + "为您服务");
+        }
+    }
+
+    private class IMSITask extends AsyncTask<Void, Void, String> {
+
+        private TextView mTxtMaster;
+
+        public IMSITask(TextView txtView) {
+            mTxtMaster = txtView;
         }
 
+        @Override
+        protected String doInBackground(Void... params) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Customer customer = JsonUtil.getCustomerInfoByIMSI();
+            mTxtMaster.setText("您好:" + customer.getCustomerName());
+        }
     }
 }
