@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telecom.model.AppInfo;
+import com.telecom.model.Customer;
+import com.telecom.util.ApkFileUtil;
+import com.telecom.util.JsonUtil;
 
 public class ApplicationDownloadActivity extends BaseActivity {
 
@@ -56,10 +62,11 @@ public class ApplicationDownloadActivity extends BaseActivity {
         mLayoutDownload = findViewById(R.id.layout_download);
         mLayoutDetail = findViewById(R.id.layout_detail);
 
-        for (int i = 0; i < 5; i++) {
-            AppInfo info = new AppInfo();
-            mAppInfoList.add(info);
-        }
+        // for (int i = 0; i < 5; i++) {
+        // AppInfo info = new AppInfo();
+        // mAppInfoList.add(info);
+        // }
+        new AppListDownloadTask().execute();
     }
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -90,6 +97,9 @@ public class ApplicationDownloadActivity extends BaseActivity {
     protected void onDestroy() {
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
+        }
+        for (AppInfo info : mAppInfoList) {
+            mDownloadManager.remove(info.getDownloadId());
         }
         super.onDestroy();
     }
@@ -124,31 +134,39 @@ public class ApplicationDownloadActivity extends BaseActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             convertView = mInflater.inflate(R.layout.applocation_list_item_layout, null);
 
+            final TextView titleView = (TextView) convertView.findViewById(R.id.title);
+            final TextView infoView = (TextView) convertView.findViewById(R.id.info);
             final Button btnDownload = (Button) convertView.findViewById(R.id.btn_download);
 
-            // final AppInfo info = mAppInfoList.get(position);
-            // final int status =
-            // ApkFileUtil.checkApkFileStatuts(getApplicationContext(),
-            // info.getVersionCode(), info.getPackageName());
-            // if (status == ApkFileUtil.INSTALLED) {
-            // btnDownload.setText("运行");
-            // } else if (info.isDownloadComplete()) {
-            // btnDownload.setText("安装");
-            // }
-            //
-            // btnDownload.setOnClickListener(new View.OnClickListener() {
-            // @Override
-            // public void onClick(View v) {
-            // if (status == ApkFileUtil.INSTALLED) {
-            // ApkFileUtil.launchApp(getApplicationContext(),
-            // info.getPackageName());
-            // } else if (info.isDownloadComplete()) {
-            // ApkFileUtil.installApkFile(getApplicationContext(), "");
-            // } else {
-            // downloadApk(position);
-            // }
-            // }
-            // });
+            final AppInfo info = mAppInfoList.get(position);
+            titleView.setText(info.getAppName());
+            infoView.setText(info.getAppDesc());
+
+            int status = ApkFileUtil.UNINSTALLED;
+
+            if (!TextUtils.isEmpty(info.getPackageName())) {
+                status = ApkFileUtil.checkApkFileStatuts(getApplicationContext(), 0,
+                        info.getPackageName());
+                if (status == ApkFileUtil.INSTALLED) {
+                    btnDownload.setText("运行");
+                } else if (info.isDownloadComplete()) {
+                    btnDownload.setText("安装");
+                }
+            }
+
+            final int install_status = status;
+            btnDownload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (install_status == ApkFileUtil.INSTALLED) {
+                        ApkFileUtil.launchApp(getApplicationContext(), info.getPackageName());
+                    } else if (info.isDownloadComplete()) {
+                        ApkFileUtil.installApkFile(getApplicationContext(), "");
+                    } else {
+                        downloadApk(position);
+                    }
+                }
+            });
 
             return convertView;
         }
@@ -160,10 +178,11 @@ public class ApplicationDownloadActivity extends BaseActivity {
         DownloadManager.Request down = new DownloadManager.Request(
                 Uri.parse("http://s1.bdstatic.com/r/www/img/i-1.0.0.png"));
         // 设置允许使用的网络类型，这里是移动网络和wifi都可以
-        Environment.getExternalStoragePublicDirectory("'");
+        // Environment.getExternalStoragePublicDirectory("'");
         down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        down.setVisibleInDownloadsUi(true);
         // 设置下载后文件存放的位置
-        down.setDestinationInExternalFilesDir(this, null, "123.png");
+        down.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "123.png");
         // 将下载请求放入队列
         long downloadId = mDownloadManager.enqueue(down);
 
@@ -185,11 +204,27 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 for (AppInfo info : mAppInfoList) {
                     if (info.getDownloadId() == downId) {
                         info.setDownloadComplete(true);
+                        info.setFilePath(mDownloadManager.getUriForDownloadedFile(downId).getPath());
+                        info.setPackageName("adsadsads");
                         break;
                     }
                 }
                 mAdapater.notifyDataSetChanged();
             }
+        }
+    }
+
+    private class AppListDownloadTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            mAppInfoList = JsonUtil.getAppList();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mAdapater.notifyDataSetChanged();
         }
     }
 }

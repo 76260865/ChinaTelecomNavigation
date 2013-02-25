@@ -110,6 +110,7 @@
                     android:id="@+id/txt_master"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
                     android:text="天翼辅导员:秀秀为您服务"
                     android:textColor="@android:color/white" />

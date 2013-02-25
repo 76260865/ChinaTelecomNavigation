@@ -12,7 +12,7 @@ public class AppInfo {
 
     private String mPackageName;
 
-    private int mVersionCode;
+    private String mVersionCode;
 
     private long mDownloadId;
 
@@ -25,6 +25,16 @@ public class AppInfo {
     private String mDownLink;
 
     private String mAppScreen;
+
+    private String mFilePath;
+
+    public String getFilePath() {
+        return mFilePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.mFilePath = filePath;
+    }
 
     public String getAppIconUri() {
         return mAppIconUri;
@@ -90,11 +100,11 @@ public class AppInfo {
         this.mPackageName = packageName;
     }
 
-    public int getVersionCode() {
+    public String getVersionCode() {
         return mVersionCode;
     }
 
-    public void setVersionCode(int versionCode) {
+    public void setVersionCode(String versionCode) {
         this.mVersionCode = versionCode;
     }
 

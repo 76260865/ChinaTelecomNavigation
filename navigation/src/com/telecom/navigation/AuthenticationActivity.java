@@ -62,7 +62,7 @@ public class AuthenticationActivity extends BaseActivity {
         mLayoutInputNumber.setVisibility(View.GONE);
         mLayoutLinearAuth.setVisibility(View.VISIBLE);
 
-        mMyAsyncTask = new MyAsyncTask(mTxtUserName);
+        mMyAsyncTask = new MyAsyncTask(mTxtMaster);
         mMyAsyncTask.execute();
     }
 
@@ -84,7 +84,7 @@ public class AuthenticationActivity extends BaseActivity {
         return tm.getLine1Number();
     }
 
-    private class MyAsyncTask extends AsyncTask<Void, Void, String> {
+    private class MyAsyncTask extends AsyncTask<Void, Void, Master> {
 
         private TextView mTxtMaster;
 
@@ -93,15 +93,20 @@ public class AuthenticationActivity extends BaseActivity {
         }
 
         @Override
-        protected String doInBackground(Void... params) {
-            return null;
+        protected Master doInBackground(Void... params) {
+            Master master = JsonUtil.getMasterInfo();
+            return master;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            Master master = JsonUtil.getMasterInfo();
+        protected void onPostExecute(Master result) {
+
+            if (result == null) {
+                return;
+            }
+
             mTxtMaster
-                    .setText("天翼辅导员：" + master.getUserName() + "工号" + master.getUserId() + "为您服务");
+                    .setText("天翼辅导员：" + result.getUserName() + "工号" + result.getUserId() + "为您服务");
         }
     }
 
@@ -115,13 +120,14 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            return null;
+            Customer customer = JsonUtil.getCustomerInfoByIMSI(mImsi);
+            return customer.getCustomerName();
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Customer customer = JsonUtil.getCustomerInfoByIMSI();
-            mTxtMaster.setText("您好:" + customer.getCustomerName());
+            Customer customer = JsonUtil.getCustomerInfoByIMSI(mImsi);
+            mTxtMaster.setText("您好:" + result);
         }
     }
 }

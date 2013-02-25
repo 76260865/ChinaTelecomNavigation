@@ -43,11 +43,11 @@ public class ApkFileUtil {
             PackageInfo packageInfo = packages.get(i);
 
             if (packageName.equals(packageInfo.packageName)) {
-                if (packageInfo.versionCode >= versionCode) {
+//                if (packageInfo.versionCode >= versionCode) {
                     return INSTALLED;
-                } else {
-                    return NEWVERSION;
-                }
+//                } else {
+//                    return NEWVERSION;
+//                }
             }
         }
         return UNINSTALLED;
