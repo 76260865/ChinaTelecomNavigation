@@ -6,7 +6,11 @@ public class AppInfo {
 
     private Bitmap mIcon;
 
+    private Bitmap mAppScreenIcon;
+
     private String mAppName;
+
+    public String fileName;
 
     private String mAppDesc;
 
@@ -118,6 +122,14 @@ public class AppInfo {
 
     public boolean isDownloadComplete() {
         return mDownloadComplete;
+    }
+
+    public Bitmap getAppScreenIcon() {
+        return mAppScreenIcon;
+    }
+
+    public void setAppScreenIcon(Bitmap appScreenIcon) {
+        mAppScreenIcon = appScreenIcon;
     }
 
     public void setDownloadComplete(boolean downloadComplete) {

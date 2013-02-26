@@ -40,7 +40,7 @@ public class JsonUtil {
         String appListString = HttpUtil.doGet(APP_DOWN_URI, params);
 
         if (TextUtils.isEmpty(appListString)) {
-            return null;
+            return appList;
         }
 
         try {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     private TelephonyManager mTelephonyMgr;
 
-    private String mImsi;
+    private EditText mEditUserPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,10 @@ public class AuthenticationActivity extends BaseActivity {
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);
         mTxtMaster = (TextView) findViewById(R.id.txt_master);
+        mEditUserPhone = (EditText) findViewById(R.id.edit_user_phone);
 
         mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        mImsi = mTelephonyMgr.getSubscriberId();
+        mIMSI = mTelephonyMgr.getSubscriberId();
 
         IMSITask imsiTask = new IMSITask(mTxtUserName);
         imsiTask.execute();
@@ -64,6 +66,8 @@ public class AuthenticationActivity extends BaseActivity {
 
         mMyAsyncTask = new MyAsyncTask(mTxtMaster);
         mMyAsyncTask.execute();
+
+        mUserPhone = mEditUserPhone.getText().toString();
     }
 
     @Override
@@ -95,6 +99,7 @@ public class AuthenticationActivity extends BaseActivity {
         @Override
         protected Master doInBackground(Void... params) {
             Master master = JsonUtil.getMasterInfo();
+            mUserId = master.getUserId();
             return master;
         }
 
@@ -120,13 +125,13 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            Customer customer = JsonUtil.getCustomerInfoByIMSI(mImsi);
-            return customer.getCustomerName();
+            Customer customer = JsonUtil.getCustomerInfoByIMSI(mIMSI);
+            mProId = customer.getProdId();
+            return customer == null ? null : customer.getCustomerName();
         }
 
         @Override
         protected void onPostExecute(String result) {
-            Customer customer = JsonUtil.getCustomerInfoByIMSI(mImsi);
             mTxtMaster.setText("您好:" + result);
         }
     }

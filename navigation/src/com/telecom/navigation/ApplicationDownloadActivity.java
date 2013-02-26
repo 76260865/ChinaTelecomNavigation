@@ -1,5 +1,11 @@
 package com.telecom.navigation;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.DownloadManager;
@@ -7,6 +13,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,17 +30,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.telecom.model.AppInfo;
-import com.telecom.model.Customer;
 import com.telecom.util.ApkFileUtil;
 import com.telecom.util.JsonUtil;
 
 public class ApplicationDownloadActivity extends BaseActivity {
 
+    private static final String URI_APP = "http://118.121.17.250";
     private DownloadCompleteReceiver mReceiver;
 
     private MyAdapter mAdapater;
@@ -43,6 +53,8 @@ public class ApplicationDownloadActivity extends BaseActivity {
     private View mLayoutDownload;
 
     private View mLayoutDetail;
+
+    private ImageView mImageAppScreenView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,28 +74,40 @@ public class ApplicationDownloadActivity extends BaseActivity {
         mLayoutDownload = findViewById(R.id.layout_download);
         mLayoutDetail = findViewById(R.id.layout_detail);
 
-        // for (int i = 0; i < 5; i++) {
-        // AppInfo info = new AppInfo();
-        // mAppInfoList.add(info);
-        // }
         new AppListDownloadTask().execute();
     }
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
 
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
             mLayoutDownload.setVisibility(View.GONE);
             mLayoutDetail.setVisibility(View.VISIBLE);
+            final AppInfo info = mAppInfoList.get(position);
             Button btnStartDownload = (Button) findViewById(R.id.btn_start_download);
+            mImageAppScreenView = (ImageView) findViewById(R.id.img_app_screen);
+            TextView txtAppName = (TextView) findViewById(R.id.txt_app_name);
+            txtAppName.setText(info.getAppName());
+            TextView txtAppIntroduce = (TextView) findViewById(R.id.txt_app_introduce);
+            txtAppIntroduce.setText(info.getAppDesc());
+
+            if (info.getAppScreenIcon() == null) {
+                new AppScreenIconDownloadTask(info).execute(URI_APP + info.getAppScreen());
+            } else {
+                mImageAppScreenView.setImageBitmap(info.getAppScreenIcon());
+            }
+
             btnStartDownload.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View v) {
                     mLayoutDetail.setVisibility(View.GONE);
                     mLayoutDownload.setVisibility(View.VISIBLE);
+                    downloadApk(position);
                 }
             });
+
+            mAppList += info.getAppId() + ",";
         }
     };
 
@@ -114,19 +138,16 @@ public class ApplicationDownloadActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return mAppInfoList.size();
         }
 
         @Override
         public Object getItem(int arg0) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getItemId(int arg0) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
@@ -134,11 +155,18 @@ public class ApplicationDownloadActivity extends BaseActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             convertView = mInflater.inflate(R.layout.applocation_list_item_layout, null);
 
+            final ImageView imgView = (ImageView) convertView.findViewById(R.id.img);
             final TextView titleView = (TextView) convertView.findViewById(R.id.title);
             final TextView infoView = (TextView) convertView.findViewById(R.id.info);
             final Button btnDownload = (Button) convertView.findViewById(R.id.btn_download);
 
             final AppInfo info = mAppInfoList.get(position);
+            if (info.getIcon() == null) {
+                new AppIconDownloadTask(imgView, info).execute(URI_APP + info.getAppIconUri());
+            } else {
+                imgView.setImageBitmap(info.getIcon());
+            }
+
             titleView.setText(info.getAppName());
             infoView.setText(info.getAppDesc());
 
@@ -161,7 +189,8 @@ public class ApplicationDownloadActivity extends BaseActivity {
                     if (install_status == ApkFileUtil.INSTALLED) {
                         ApkFileUtil.launchApp(getApplicationContext(), info.getPackageName());
                     } else if (info.isDownloadComplete()) {
-                        ApkFileUtil.installApkFile(getApplicationContext(), "");
+                        ApkFileUtil.installApkFile(getApplicationContext(), info.getFilePath());
+                        // mAppList += info.getAppId() + ",";
                     } else {
                         downloadApk(position);
                     }
@@ -173,20 +202,21 @@ public class ApplicationDownloadActivity extends BaseActivity {
     }
 
     private void downloadApk(int position) {
-
+        AppInfo info = mAppInfoList.get(position);
         // 创建下载请求
-        DownloadManager.Request down = new DownloadManager.Request(
-                Uri.parse("http://s1.bdstatic.com/r/www/img/i-1.0.0.png"));
+        DownloadManager.Request down = new DownloadManager.Request(Uri.parse(URI_APP
+                + info.getDownLink()));
+
         // 设置允许使用的网络类型，这里是移动网络和wifi都可以
         // Environment.getExternalStoragePublicDirectory("'");
         down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         down.setVisibleInDownloadsUi(true);
+        info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
-        down.setDestinationInExternalFilesDir(this, Environment.DIRECTORY_DOWNLOADS, "123.png");
+        down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, info.fileName);
         // 将下载请求放入队列
         long downloadId = mDownloadManager.enqueue(down);
 
-        AppInfo info = mAppInfoList.get(position);
         info.setDownloadId(downloadId);
 
         // manager.remove(downloadId);
@@ -204,8 +234,19 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 for (AppInfo info : mAppInfoList) {
                     if (info.getDownloadId() == downId) {
                         info.setDownloadComplete(true);
-                        info.setFilePath(mDownloadManager.getUriForDownloadedFile(downId).getPath());
-                        info.setPackageName("adsadsads");
+                        File path = Environment
+                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        String realPath = new File(path, info.fileName).getPath();
+
+                        Log.d("xxxxx", realPath);
+
+                        info.setFilePath(realPath);
+                        PackageInfo packageInfo = ApkFileUtil.getPackageInfo(
+                                getApplicationContext(), info.getFilePath());
+                        Log.d("xxxxx", "packageInfo:" + packageInfo);
+                        if (packageInfo != null) {
+                            info.setPackageName(packageInfo.packageName);
+                        }
                         break;
                     }
                 }
@@ -224,7 +265,69 @@ public class ApplicationDownloadActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
+            if (mAppInfoList.size() == 0) {
+                Toast.makeText(getApplicationContext(), "获取应用列表失败", Toast.LENGTH_LONG).show();
+            }
             mAdapater.notifyDataSetChanged();
         }
+    }
+
+    private class AppIconDownloadTask extends AsyncTask<String, Void, Bitmap> {
+
+        private ImageView mImgView;
+        private AppInfo mAppInfo;
+
+        public AppIconDownloadTask(ImageView imgView, AppInfo appInfo) {
+            mImgView = imgView;
+            mAppInfo = appInfo;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            return getBitmapFromUrl(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            mAppInfo.setIcon(result);
+            mImgView.setImageBitmap(result);
+        }
+    }
+
+    private class AppScreenIconDownloadTask extends AsyncTask<String, Void, Bitmap> {
+
+        private AppInfo mAppInfo;
+
+        public AppScreenIconDownloadTask(AppInfo appInfo) {
+            mAppInfo = appInfo;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            return getBitmapFromUrl(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            mAppInfo.setAppScreenIcon(result);
+            mImageAppScreenView.setImageBitmap(result);
+        }
+    }
+
+    private Bitmap getBitmapFromUrl(String imgUrl) {
+        URL url;
+        Bitmap bitmap = null;
+        try {
+            url = new URL(imgUrl);
+            InputStream is = url.openConnection().getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bitmap = BitmapFactory.decodeStream(bis);
+            bis.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

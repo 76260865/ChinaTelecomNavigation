@@ -1,5 +1,7 @@
 package com.telecom.navigation;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +69,8 @@ public class AdvertisementActivity extends BaseActivity {
         indicator.getBackground().setAlpha(0);
 
         mGestureDetector = new GestureDetector(this, new MyGestureListener(getApplicationContext()));
+
+        mStartTime = new Date();
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
@@ -135,23 +139,6 @@ public class AdvertisementActivity extends BaseActivity {
                                         : AppliactionCategoryActivity.class);
                         startActivity(intent);
                         // TOOD:下载电信掌上营业厅
-                        // FIXME: for test
-                        // PackageInfo packageInfo =
-                        // ApkFileUtil.getPackageInfo(getActivity(),
-                        // "/sdcard/SplashScreen.apk");
-                        // Toast.makeText(getActivity(),
-                        // "packageInfo:"+packageInfo, 1).show();
-                        // if (packageInfo != null) {
-                        // String packageName = packageInfo.packageName;
-                        // Toast.makeText(getActivity(),
-                        // "packageName:"+packageName, 1).show();
-                        // int i =
-                        // ApkFileUtil.checkApkFileStatuts(getActivity(),
-                        // packageInfo.versionCode, packageName);
-                        // if (i == 100) {
-                        // ApkFileUtil.launchApp(getActivity(), packageName);
-                        // }
-                        // }
                     }
                 });
             }

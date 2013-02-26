@@ -43,11 +43,11 @@ public class ApkFileUtil {
             PackageInfo packageInfo = packages.get(i);
 
             if (packageName.equals(packageInfo.packageName)) {
-//                if (packageInfo.versionCode >= versionCode) {
-                    return INSTALLED;
-//                } else {
-//                    return NEWVERSION;
-//                }
+                // if (packageInfo.versionCode >= versionCode) {
+                return INSTALLED;
+                // } else {
+                // return NEWVERSION;
+                // }
             }
         }
         return UNINSTALLED;
@@ -56,6 +56,7 @@ public class ApkFileUtil {
     public static void launchApp(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();
         Intent intent = pm.getLaunchIntentForPackage(packageName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -63,6 +64,7 @@ public class ApkFileUtil {
         Intent intent = new Intent();
         intent.setDataAndType(Uri.fromFile(new File(appPath)),
                 "application/vnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }

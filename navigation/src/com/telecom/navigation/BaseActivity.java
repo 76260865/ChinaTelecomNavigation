@@ -1,5 +1,7 @@
 package com.telecom.navigation;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,12 +9,25 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 
 public class BaseActivity extends FragmentActivity {
 
     private boolean isFirstUse;
+
+    protected static String mProId;
+
+    protected static String mIMSI;
+
+    protected static Date mStartTime;
+
+    protected static Date mEndTime;
+
+    protected static String mUserId;
+
+    protected static String mUserPhone;
+
+    protected static String mAppList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
