@@ -53,7 +53,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length]);
+            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length], position);
         }
 
         @Override
@@ -74,10 +74,13 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
         private int mContent;
 
-        public static AdvertisementFragment newInstance(int content) {
+        private int mPosition;
+
+        public static AdvertisementFragment newInstance(int content, int position) {
             AdvertisementFragment fragment = new AdvertisementFragment();
 
             fragment.mContent = content;
+            fragment.mPosition = position;
 
             return fragment;
         }
@@ -97,6 +100,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), ApplicationDownloadActivity.class);
+                    intent.putExtra("position", mPosition + 1);
                     startActivity(intent);
                 }
             });

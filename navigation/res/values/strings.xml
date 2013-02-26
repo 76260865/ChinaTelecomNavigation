@@ -30,5 +30,14 @@
     <string name="btn_download_txt">下载</string>
     <string name="btn_start_download_txt">开始下载</string>
     <string name="txt_connect_network">请连接网络</string>
+    <string name="str_format_master_info" formatted="false">天翼辅导员：%s 工号 %s 为您服务</string>
+    <string name="txt_toast_get_message_failed">获取信息出错</string>
+    <string name="str_format_master_name">您好：%s</string>
+    <string name="str_format_input_phone">请输入电话号码</string>
+    <string name="msg_get_app_list_failed">获取应用列表失败</string>
+    <string name="msg_download_complete">下载完成</string>
+    <string name="btn_install_txt">安装</string>
+    <string name="btn_run_txt">运行</string>
+    <string name="msg_submit_error">提交出错</string>
 
 </resources>

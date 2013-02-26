@@ -8,7 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import android.app.Dialog;
 import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +58,8 @@ public class ApplicationDownloadActivity extends BaseActivity {
 
     private ImageView mImageAppScreenView;
 
+    private ProgressDialog mProgressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +78,17 @@ public class ApplicationDownloadActivity extends BaseActivity {
         mLayoutDownload = findViewById(R.id.layout_download);
         mLayoutDetail = findViewById(R.id.layout_detail);
 
-        new AppListDownloadTask().execute();
+        int group = getIntent().getIntExtra("position", 0);
+        new AppListDownloadTask(group).execute();
+        showDialog(0);
+    }
+
+    @Override
+    @Deprecated
+    protected Dialog onCreateDialog(int id) {
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setCancelable(true);
+        return mProgressDialog;
     }
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
@@ -97,6 +111,11 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 mImageAppScreenView.setImageBitmap(info.getAppScreenIcon());
             }
 
+            if (info.isDownloadComplete()) {
+                btnStartDownload.setEnabled(false);
+            } else {
+                btnStartDownload.setEnabled(true);
+            }
             btnStartDownload.setOnClickListener(new OnClickListener() {
 
                 @Override
@@ -106,8 +125,6 @@ public class ApplicationDownloadActivity extends BaseActivity {
                     downloadApk(position);
                 }
             });
-
-            mAppList += info.getAppId() + ",";
         }
     };
 
@@ -115,6 +132,16 @@ public class ApplicationDownloadActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         mAdapater.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mLayoutDetail.getVisibility() == View.VISIBLE) {
+            mLayoutDetail.setVisibility(View.GONE);
+            mLayoutDownload.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -176,9 +203,9 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 status = ApkFileUtil.checkApkFileStatuts(getApplicationContext(), 0,
                         info.getPackageName());
                 if (status == ApkFileUtil.INSTALLED) {
-                    btnDownload.setText("运行");
+                    btnDownload.setText(R.string.btn_run_txt);
                 } else if (info.isDownloadComplete()) {
-                    btnDownload.setText("安装");
+                    btnDownload.setText(R.string.btn_install_txt);
                 }
             }
 
@@ -190,7 +217,7 @@ public class ApplicationDownloadActivity extends BaseActivity {
                         ApkFileUtil.launchApp(getApplicationContext(), info.getPackageName());
                     } else if (info.isDownloadComplete()) {
                         ApkFileUtil.installApkFile(getApplicationContext(), info.getFilePath());
-                        // mAppList += info.getAppId() + ",";
+                        mAppList += info.getAppId() + ",";
                     } else {
                         downloadApk(position);
                     }
@@ -208,7 +235,6 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 + info.getDownLink()));
 
         // 设置允许使用的网络类型，这里是移动网络和wifi都可以
-        // Environment.getExternalStoragePublicDirectory("'");
         down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         down.setVisibleInDownloadsUi(true);
         info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
@@ -218,8 +244,6 @@ public class ApplicationDownloadActivity extends BaseActivity {
         long downloadId = mDownloadManager.enqueue(down);
 
         info.setDownloadId(downloadId);
-
-        // manager.remove(downloadId);
     }
 
     public class DownloadCompleteReceiver extends BroadcastReceiver {
@@ -230,7 +254,8 @@ public class ApplicationDownloadActivity extends BaseActivity {
             if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
                 long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
                 Log.d(TAG, " download complete! id : " + downId);
-                Toast.makeText(context, "download complete", 1).show();
+                Toast.makeText(context, R.string.msg_download_complete, Toast.LENGTH_LONG).show();
+
                 for (AppInfo info : mAppInfoList) {
                     if (info.getDownloadId() == downId) {
                         info.setDownloadComplete(true);
@@ -238,12 +263,13 @@ public class ApplicationDownloadActivity extends BaseActivity {
                                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                         String realPath = new File(path, info.fileName).getPath();
 
-                        Log.d("xxxxx", realPath);
+                        Log.d(TAG, realPath);
 
                         info.setFilePath(realPath);
                         PackageInfo packageInfo = ApkFileUtil.getPackageInfo(
                                 getApplicationContext(), info.getFilePath());
-                        Log.d("xxxxx", "packageInfo:" + packageInfo);
+                        Log.d(TAG, "packageInfo:" + packageInfo);
+
                         if (packageInfo != null) {
                             info.setPackageName(packageInfo.packageName);
                         }
@@ -256,19 +282,27 @@ public class ApplicationDownloadActivity extends BaseActivity {
     }
 
     private class AppListDownloadTask extends AsyncTask<Void, Void, Void> {
+        private int mPosition;
+
+        public AppListDownloadTask(int position) {
+            mPosition = position;
+        }
 
         @Override
         protected Void doInBackground(Void... params) {
-            mAppInfoList = JsonUtil.getAppList();
+            mAppInfoList = JsonUtil.getAppList(mPosition);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             if (mAppInfoList.size() == 0) {
-                Toast.makeText(getApplicationContext(), "获取应用列表失败", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.msg_get_app_list_failed,
+                        Toast.LENGTH_LONG).show();
+                return;
             }
             mAdapater.notifyDataSetChanged();
+            mProgressDialog.dismiss();
         }
     }
 

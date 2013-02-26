@@ -30,12 +30,12 @@ public class JsonUtil {
 
     private static final String APP_DOWN_URI = "http://118.121.17.250/bass/AppsDown";
 
-    public static ArrayList<AppInfo> getAppList() {
+    public static ArrayList<AppInfo> getAppList(int group) {
         ArrayList<AppInfo> appList = new ArrayList<AppInfo>();
 
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("type", "group"));
-        params.add(new BasicNameValuePair("group", "1"));
+        params.add(new BasicNameValuePair("group", "" + group));
 
         String appListString = HttpUtil.doGet(APP_DOWN_URI, params);
 
@@ -100,7 +100,7 @@ public class JsonUtil {
         return cusInfo;
     }
 
-    public static Master getMasterInfo() {
+    public static Master getMasterInfo(String phoneNum) {
         Master masterInfo = new Master();
 
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();

@@ -169,6 +169,7 @@ public class AdvertisementActivity extends BaseActivity {
                 Intent intent = new Intent(mContext, isFirstUse ? AuthenticationActivity.class
                         : AppliactionCategoryActivity.class);
                 startActivity(intent);
+                finish();
 
                 return true;
             }

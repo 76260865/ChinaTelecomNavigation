@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
@@ -28,6 +29,8 @@ public class AuthenticationActivity extends BaseActivity {
 
     private MyAsyncTask mMyAsyncTask;
 
+    private IMSITask mImsiTask;
+
     private TelephonyManager mTelephonyMgr;
 
     private EditText mEditUserPhone;
@@ -43,10 +46,11 @@ public class AuthenticationActivity extends BaseActivity {
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Toast.makeText(
-                getApplicationContext(),
-                "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" + dm.density
-                        + " densityDpi:" + dm.densityDpi, 1).show();
+        // Toast.makeText(
+        // getApplicationContext(),
+        // "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" +
+        // dm.density
+        // + " densityDpi:" + dm.densityDpi, 1).show();
         mLayoutInputNumber = findViewById(R.id.linear_input_number);
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);
@@ -56,11 +60,16 @@ public class AuthenticationActivity extends BaseActivity {
         mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         mIMSI = mTelephonyMgr.getSubscriberId();
 
-        IMSITask imsiTask = new IMSITask(mTxtUserName);
-        imsiTask.execute();
+        mImsiTask = new IMSITask(mTxtUserName);
+        mImsiTask.execute();
     }
 
     public void onBtnAuthClick(View v) {
+        if (TextUtils.isEmpty(mEditUserPhone.getText())) {
+            Toast.makeText(this, R.string.str_format_input_phone, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         mLayoutInputNumber.setVisibility(View.GONE);
         mLayoutLinearAuth.setVisibility(View.VISIBLE);
 
@@ -76,6 +85,7 @@ public class AuthenticationActivity extends BaseActivity {
         if (mMyAsyncTask != null) {
             mMyAsyncTask.cancel(true);
         }
+        mImsiTask.cancel(true);
     }
 
     public void onBtnNextClick(View v) {
@@ -98,7 +108,7 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected Master doInBackground(Void... params) {
-            Master master = JsonUtil.getMasterInfo();
+            Master master = JsonUtil.getMasterInfo(mPhoneNum);
             mUserId = master.getUserId();
             return master;
         }
@@ -110,8 +120,8 @@ public class AuthenticationActivity extends BaseActivity {
                 return;
             }
 
-            mTxtMaster
-                    .setText("天翼辅导员：" + result.getUserName() + "工号" + result.getUserId() + "为您服务");
+            mTxtMaster.setText(getString((R.string.str_format_master_info), result.getUserName(),
+                    result.getUserId()));
         }
     }
 
@@ -132,7 +142,11 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            mTxtMaster.setText("您好:" + result);
+            if (TextUtils.isEmpty(result)) {
+                Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
+                        Toast.LENGTH_LONG).show();
+            }
+            mTxtMaster.setText(getString(R.string.str_format_master_name, result));
         }
     }
 }

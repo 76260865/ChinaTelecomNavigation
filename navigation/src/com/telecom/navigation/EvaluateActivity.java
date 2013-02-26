@@ -130,7 +130,8 @@ public class EvaluateActivity extends BaseActivity {
                 mLinearBottom.setVisibility(View.VISIBLE);
                 mTxtTitle.setText(R.string.txt_thanks_evaluate);
             } else {
-                Toast.makeText(getApplicationContext(), "提交出错", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), R.string.msg_submit_error,
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

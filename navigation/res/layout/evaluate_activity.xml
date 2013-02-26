@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="44dip"
+        android:layout_height="@dimen/title_bar_height"
         android:background="@drawable/titlebar_bg"
         android:orientation="vertical" >
 
@@ -83,7 +83,7 @@
                     android:layout_width="72dip"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dip"
-                    android:background="@drawable/btn"
+                    android:background="@drawable/button"
                     android:text="@string/btn_exit_txt"
                     android:textSize="13sp" />
 
@@ -91,7 +91,7 @@
                     android:id="@+id/btn_back_to_main"
                     android:layout_width="120dip"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn"
+                    android:background="@drawable/button"
                     android:text="@string/btn_back_to_main_txt"
                     android:textSize="13sp" />
             </LinearLayout>
