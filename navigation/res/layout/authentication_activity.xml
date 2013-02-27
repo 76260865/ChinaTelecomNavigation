@@ -33,7 +33,7 @@
             android:id="@+id/txt_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dip"
+            android:layout_margin="20dip"
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textStyle="bold" />

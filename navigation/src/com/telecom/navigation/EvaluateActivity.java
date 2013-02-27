@@ -10,11 +10,14 @@ import org.apache.http.message.BasicNameValuePair;
 import com.telecom.util.HttpUtil;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -64,12 +67,6 @@ public class EvaluateActivity extends BaseActivity {
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 mEndTime = new Date();
-
-                SharedPreferences settings = getSharedPreferences(
-                        AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
-                Editor editor = settings.edit();
-                editor.putBoolean(AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, false);
-                editor.commit();
 
                 List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
                 paramsReport.add(new BasicNameValuePair("opt", "report"));
@@ -129,10 +126,31 @@ public class EvaluateActivity extends BaseActivity {
                 mRatingBar.setVisibility(View.GONE);
                 mLinearBottom.setVisibility(View.VISIBLE);
                 mTxtTitle.setText(R.string.txt_thanks_evaluate);
+
+                SharedPreferences settings = getSharedPreferences(
+                        AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
+                Editor editor = settings.edit();
+                editor.putBoolean(AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, false);
+                editor.commit();
             } else {
                 Toast.makeText(getApplicationContext(), R.string.msg_submit_error,
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        return true;
     }
 }

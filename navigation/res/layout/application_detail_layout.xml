@@ -2,20 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/maket_background"
+    android:background="@drawable/market"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/title_bar_height"
-        android:background="@drawable/titlebar_bg"
-        android:orientation="vertical" >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/text2" />
-    </LinearLayout>
+        android:layout_height="20dip"
+        android:background="@drawable/shadow_top" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -31,6 +24,7 @@
                 android:id="@+id/txt_app_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dip"
                 android:layout_marginLeft="20dip"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -52,6 +46,11 @@
                 android:textSize="10sp" />
         </LinearLayout>
     </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dip"
+        android:background="@drawable/shadow_bottom" />
 
     <LinearLayout
         android:layout_width="match_parent"

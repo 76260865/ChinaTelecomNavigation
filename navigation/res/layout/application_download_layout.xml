@@ -2,8 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/maket_bg_all"
+    android:background="@drawable/market_all"
     android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@drawable/titlebar_bg"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/text2" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_download"
@@ -11,24 +23,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            android:background="@drawable/titlebar_bg"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/text2" />
-        </LinearLayout>
+            android:layout_height="20dip"
+            android:background="@drawable/shadow_top" />
 
         <ListView
             android:id="@+id/lst_app"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dip"
+            android:layout_weight="1"
             android:cacheColorHint="#00000000" >
         </ListView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:background="@drawable/shadow_bottom" />
     </LinearLayout>
 
     <include

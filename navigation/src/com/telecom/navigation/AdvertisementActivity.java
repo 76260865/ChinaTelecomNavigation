@@ -1,16 +1,32 @@
 package com.telecom.navigation;
 
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
@@ -20,7 +36,13 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.telecom.model.AppInfo;
+import com.telecom.model.Customer;
+import com.telecom.navigation.ApplicationDownloadActivity.DownloadCompleteReceiver;
+import com.telecom.util.ApkFileUtil;
+import com.telecom.util.JsonUtil;
 import com.telecom.view.CirclePageIndicator;
 
 public class AdvertisementActivity extends BaseActivity {
@@ -28,11 +50,23 @@ public class AdvertisementActivity extends BaseActivity {
 
     private ViewPager mPager;
 
+    private DownloadCompleteReceiver mReceiver;
+
+    private DownloadManager mDownloadManager;
+
     private GestureDetector mGestureDetector;
 
     public static final String EXTRA_KEY_SHARE_PREF = "extra_key_share_pref";
 
     public static final String EXTRA_KEY_SHARE_FIRST = "extra_key_first";
+
+    private TelephonyManager mTelephonyMgr;
+
+    private String mDownloadUrl;
+
+    private String mFileName;
+
+    private long mDownloadId = -1l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +74,10 @@ public class AdvertisementActivity extends BaseActivity {
 
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.advertisement_layout);
+
+        mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mIMSI = mTelephonyMgr.getSubscriberId();
+        mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
         SharedPreferences settings = getSharedPreferences(EXTRA_KEY_SHARE_PREF,
                 Activity.MODE_PRIVATE);
@@ -71,6 +109,22 @@ public class AdvertisementActivity extends BaseActivity {
         mGestureDetector = new GestureDetector(this, new MyGestureListener(getApplicationContext()));
 
         mStartTime = new Date();
+
+        new IMSITask().execute();
+
+        mReceiver = new DownloadCompleteReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
+        if (mDownloadId > -1l) {
+            mDownloadManager.remove(mDownloadId);
+        }
+        super.onDestroy();
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
@@ -125,7 +179,7 @@ public class AdvertisementActivity extends BaseActivity {
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
             view.setBackgroundResource(mContent);
 
-            if (mContent == R.drawable.ad2 || mContent == R.drawable.ad3) {
+            if (mContent == R.drawable.ad3) {
                 view.setOnClickListener(new OnClickListener() {
 
                     @Override
@@ -138,7 +192,8 @@ public class AdvertisementActivity extends BaseActivity {
                                 isFirstUse ? AuthenticationActivity.class
                                         : AppliactionCategoryActivity.class);
                         startActivity(intent);
-                        // TOOD:下载电信掌上营业厅
+
+                        ((AdvertisementActivity) getActivity()).downloadApk();
                     }
                 });
             }
@@ -149,6 +204,63 @@ public class AdvertisementActivity extends BaseActivity {
         public void onSaveInstanceState(Bundle outState) {
             super.onSaveInstanceState(outState);
             outState.putInt(KEY_CONTENT, mContent);
+        }
+    }
+
+    private void downloadApk() {
+        if (TextUtils.isEmpty(mDownloadUrl)) {
+            return;
+        }
+        // 创建下载请求
+        DownloadManager.Request down = new DownloadManager.Request(Uri.parse(mDownloadUrl));
+
+        // 设置允许使用的网络类型，这里是移动网络和wifi都可以
+        down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
+                | DownloadManager.Request.NETWORK_WIFI);
+        down.setVisibleInDownloadsUi(true);
+        mFileName = System.currentTimeMillis() + ".apk";
+        // 设置下载后文件存放的位置
+        down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, mFileName);
+        // 将下载请求放入队列
+        mDownloadId = mDownloadManager.enqueue(down);
+    }
+
+    public class DownloadCompleteReceiver extends BroadcastReceiver {
+        private static final String TAG = "DownloadCompleteReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
+                long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(downId);
+                Cursor cursor = mDownloadManager.query(query);
+
+                if (cursor.moveToFirst() && mDownloadId == downId) {
+                    switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                    case DownloadManager.STATUS_SUCCESSFUL: {
+                        Toast.makeText(context, R.string.msg_download_complete, Toast.LENGTH_LONG)
+                                .show();
+                        Log.d(TAG, " download complete! id : " + downId);
+
+                        File path = Environment
+                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        String realPath = new File(path, mFileName).getPath();
+                        ApkFileUtil.installApkFile(getApplicationContext(), realPath);
+                        break;
+                    }
+                    case DownloadManager.STATUS_FAILED: {
+                        Toast.makeText(context, R.string.msg_download_failed, Toast.LENGTH_LONG)
+                                .show();
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
+
+            }
         }
     }
 
@@ -169,12 +281,42 @@ public class AdvertisementActivity extends BaseActivity {
                 Intent intent = new Intent(mContext, isFirstUse ? AuthenticationActivity.class
                         : AppliactionCategoryActivity.class);
                 startActivity(intent);
-                finish();
 
                 return true;
             }
             return super.onFling(e1, e2, velocityX, velocityY);
         }
 
+    }
+
+    private class IMSITask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            Customer customer = JsonUtil.getCustomerInfoByIMSI(mIMSI);
+            if (customer != null) {
+                mProId = customer.getProdId();
+                mDownloadUrl = customer.getmApkUri();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MINUTE, customer.getInvalidTime());
+                SimpleDateFormat sdf = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss ");
+                try {
+                    Date date = sdf.parse(customer.getmAccountTime());
+                    if (calendar.getTime().after(date)) {
+                        SharedPreferences settings = getSharedPreferences(
+                                AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
+                        Editor editor = settings.edit();
+                        editor.putBoolean(AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, false);
+                        editor.commit();
+                    }
+                } catch (ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 }

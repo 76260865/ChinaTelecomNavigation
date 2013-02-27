@@ -46,11 +46,10 @@ public class AuthenticationActivity extends BaseActivity {
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        // Toast.makeText(
-        // getApplicationContext(),
-        // "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" +
-        // dm.density
-        // + " densityDpi:" + dm.densityDpi, 1).show();
+        Toast.makeText(
+                getApplicationContext(),
+                "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" + dm.density
+                        + " densityDpi:" + dm.densityDpi, 1).show();
         mLayoutInputNumber = findViewById(R.id.linear_input_number);
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);
@@ -109,7 +108,9 @@ public class AuthenticationActivity extends BaseActivity {
         @Override
         protected Master doInBackground(Void... params) {
             Master master = JsonUtil.getMasterInfo(mPhoneNum);
-            mUserId = master.getUserId();
+            if (master != null) {
+                mUserId = master.getUserId();
+            }
             return master;
         }
 
@@ -117,6 +118,8 @@ public class AuthenticationActivity extends BaseActivity {
         protected void onPostExecute(Master result) {
 
             if (result == null) {
+                Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
+                        Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -136,7 +139,9 @@ public class AuthenticationActivity extends BaseActivity {
         @Override
         protected String doInBackground(Void... params) {
             Customer customer = JsonUtil.getCustomerInfoByIMSI(mIMSI);
-            mProId = customer.getProdId();
+            if (customer != null) {
+                mProId = customer.getProdId();
+            }
             return customer == null ? null : customer.getCustomerName();
         }
 

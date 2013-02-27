@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -44,6 +45,7 @@ import com.telecom.util.JsonUtil;
 public class ApplicationDownloadActivity extends BaseActivity {
 
     private static final String URI_APP = "http://118.121.17.250";
+    
     private DownloadCompleteReceiver mReceiver;
 
     private MyAdapter mAdapater;
@@ -235,7 +237,8 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 + info.getDownLink()));
 
         // 设置允许使用的网络类型，这里是移动网络和wifi都可以
-        down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
+                | DownloadManager.Request.NETWORK_WIFI);
         down.setVisibleInDownloadsUi(true);
         info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
@@ -251,32 +254,53 @@ public class ApplicationDownloadActivity extends BaseActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(intent.getAction())) {
                 long downId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                Log.d(TAG, " download complete! id : " + downId);
-                Toast.makeText(context, R.string.msg_download_complete, Toast.LENGTH_LONG).show();
+                DownloadManager.Query query = new DownloadManager.Query();
+                query.setFilterById(downId);
+                Cursor cursor = mDownloadManager.query(query);
 
-                for (AppInfo info : mAppInfoList) {
-                    if (info.getDownloadId() == downId) {
-                        info.setDownloadComplete(true);
-                        File path = Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        String realPath = new File(path, info.fileName).getPath();
+                if (cursor.moveToFirst()) {
+                    switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+                    case DownloadManager.STATUS_SUCCESSFUL: {
+                        Toast.makeText(context, R.string.msg_download_complete, Toast.LENGTH_LONG)
+                                .show();
+                        Log.d(TAG, " download complete! id : " + downId);
 
-                        Log.d(TAG, realPath);
+                        for (AppInfo info : mAppInfoList) {
+                            if (info.getDownloadId() == downId) {
+                                info.setDownloadComplete(true);
+                                File path = Environment
+                                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                String realPath = new File(path, info.fileName).getPath();
 
-                        info.setFilePath(realPath);
-                        PackageInfo packageInfo = ApkFileUtil.getPackageInfo(
-                                getApplicationContext(), info.getFilePath());
-                        Log.d(TAG, "packageInfo:" + packageInfo);
+                                Log.d(TAG, realPath);
 
-                        if (packageInfo != null) {
-                            info.setPackageName(packageInfo.packageName);
+                                info.setFilePath(realPath);
+                                PackageInfo packageInfo = ApkFileUtil.getPackageInfo(
+                                        getApplicationContext(), info.getFilePath());
+                                Log.d(TAG, "packageInfo:" + packageInfo);
+
+                                if (packageInfo != null) {
+                                    info.setPackageName(packageInfo.packageName);
+                                }
+                                break;
+                            }
                         }
+                        mAdapater.notifyDataSetChanged();
+                        break;
+                    }
+                    case DownloadManager.STATUS_FAILED: {
+                        Toast.makeText(context, R.string.msg_download_failed, Toast.LENGTH_LONG)
+                                .show();
+                        break;
+                    }
+                    default:
                         break;
                     }
                 }
-                mAdapater.notifyDataSetChanged();
+
             }
         }
     }
@@ -299,6 +323,7 @@ public class ApplicationDownloadActivity extends BaseActivity {
             if (mAppInfoList.size() == 0) {
                 Toast.makeText(getApplicationContext(), R.string.msg_get_app_list_failed,
                         Toast.LENGTH_LONG).show();
+                mProgressDialog.dismiss();
                 return;
             }
             mAdapater.notifyDataSetChanged();

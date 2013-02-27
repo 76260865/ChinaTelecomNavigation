@@ -16,12 +16,6 @@ import com.telecom.model.Master;
 
 public class JsonUtil {
 
-    private static final String customerString = "{" + "\"CustomerList\": [" + "{"
-            + "\"CustomerName\": \"罗晶\"," + "\"PhoneNumber\": \"18080005203\","
-            + "\"ProdId\": \"102029829644\"" + "}" + "]," + "\"Result\": \"Success\"" + "}";
-    private static final String masterString = "{" + "\"Result\": \"Success\"," + "\"UserList\": ["
-            + "{" + "\"UserId\": \"2082216\"," + "\"UserName\": \"程小川（高新）\"" + "}" + "]" + "}";
-
     private static final String ResultKey = "Result";
 
     private static final String ResultSuccess = "Success";
@@ -87,11 +81,14 @@ public class JsonUtil {
             JSONObject object = new JSONObject(customerResult);
             String result = object.getString(ResultKey);
             if (TextUtils.equals(result, ResultSuccess)) {
+                cusInfo.setApkUri(object.getString("ApkUrl"));
+                cusInfo.setInvalidTime(object.getInt("InvalidTime"));
                 JSONArray array = object.getJSONArray("CustomerList");
                 JSONObject customer = array.getJSONObject(0);
                 cusInfo.setCustomerName(customer.getString("CustomerName"));
                 cusInfo.setPhoneNumber(customer.getString("PhoneNumber"));
                 cusInfo.setProdId(customer.getString("ProdId"));
+                cusInfo.setmAccountTime(customer.getString("AccountTime"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
