@@ -18,7 +18,7 @@ public class AppInfo {
 
     private String mVersionCode;
 
-    private long mDownloadId;
+    private long mDownloadId = -1l;
 
     private boolean mDownloadComplete;
 

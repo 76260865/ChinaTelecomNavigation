@@ -45,7 +45,7 @@ import com.telecom.util.JsonUtil;
 public class ApplicationDownloadActivity extends BaseActivity {
 
     private static final String URI_APP = "http://118.121.17.250";
-    
+
     private DownloadCompleteReceiver mReceiver;
 
     private MyAdapter mAdapater;
@@ -152,7 +152,9 @@ public class ApplicationDownloadActivity extends BaseActivity {
             unregisterReceiver(mReceiver);
         }
         for (AppInfo info : mAppInfoList) {
-            mDownloadManager.remove(info.getDownloadId());
+            if (info.getDownloadId() > 0) {
+                mDownloadManager.remove(info.getDownloadId());
+            }
         }
         super.onDestroy();
     }
@@ -243,6 +245,10 @@ public class ApplicationDownloadActivity extends BaseActivity {
         info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
         down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, info.fileName);
+
+        if (info.getDownloadId() > 0) {
+            mDownloadManager.remove(info.getDownloadId());
+        }
         // 将下载请求放入队列
         long downloadId = mDownloadManager.enqueue(down);
 

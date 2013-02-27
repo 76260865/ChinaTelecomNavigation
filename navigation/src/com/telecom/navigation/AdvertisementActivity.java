@@ -301,7 +301,7 @@ public class AdvertisementActivity extends BaseActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.MINUTE, customer.getInvalidTime());
-                SimpleDateFormat sdf = new SimpleDateFormat(" yyyy-MM-dd HH:mm:ss ");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = sdf.parse(customer.getmAccountTime());
                     if (calendar.getTime().after(date)) {
