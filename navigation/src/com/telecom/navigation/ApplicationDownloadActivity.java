@@ -108,6 +108,7 @@ public class ApplicationDownloadActivity extends BaseActivity {
             txtAppIntroduce.setText(info.getAppDesc());
 
             if (info.getAppScreenIcon() == null) {
+                mImageAppScreenView.setImageBitmap(null);
                 new AppScreenIconDownloadTask(info).execute(URI_APP + info.getAppScreen());
             } else {
                 mImageAppScreenView.setImageBitmap(info.getAppScreenIcon());

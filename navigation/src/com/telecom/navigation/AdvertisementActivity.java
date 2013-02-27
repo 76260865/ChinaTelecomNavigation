@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -38,9 +37,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.telecom.model.AppInfo;
 import com.telecom.model.Customer;
-import com.telecom.navigation.ApplicationDownloadActivity.DownloadCompleteReceiver;
 import com.telecom.util.ApkFileUtil;
 import com.telecom.util.JsonUtil;
 import com.telecom.view.CirclePageIndicator;
