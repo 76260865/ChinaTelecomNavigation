@@ -264,9 +264,7 @@ public class AdvertisementActivity extends BaseActivity {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (mPager.getCurrentItem() == mPager.getAdapter().getCount() - 1
-                    && (velocityX < 0 || !NetworkUtil
-                            .isNetworkConnected(AdvertisementActivity.this))) {
+            if (mPager.getCurrentItem() == mPager.getAdapter().getCount() - 1 && velocityX < 0) {
                 SharedPreferences settings = mContext.getSharedPreferences(EXTRA_KEY_SHARE_PREF,
                         Activity.MODE_PRIVATE);
                 boolean isFirstUse = settings.getBoolean(EXTRA_KEY_SHARE_FIRST, true);

@@ -72,7 +72,8 @@ public class SplashScreen extends BaseActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
                     Date date = sdf.parse(customer.getmAccountTime());
-                    if (calendar.getTime().after(date)) {
+                    // TODO: change to after
+                    if (calendar.getTime().before(date)) {
                         SharedPreferences settings = getSharedPreferences(
                                 AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
                         Editor editor = settings.edit();

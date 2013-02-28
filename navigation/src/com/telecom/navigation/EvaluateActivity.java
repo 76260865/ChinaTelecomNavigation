@@ -70,16 +70,17 @@ public class EvaluateActivity extends BaseActivity {
                         Toast.LENGTH_LONG).show();
                 mEndTime = new Date();
 
+                // TODO:
                 List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
                 paramsReport.add(new BasicNameValuePair("opt", "report"));
-                paramsReport.add(new BasicNameValuePair("prod_id", "223344"));
-                paramsReport.add(new BasicNameValuePair("imsi", "4600300000001"));
+                paramsReport.add(new BasicNameValuePair("prod_id", mProId));
+                paramsReport.add(new BasicNameValuePair("imsi", mIMSI));
                 paramsReport.add(new BasicNameValuePair("train_start_time", mDateFormat
                         .format(mStartTime)));
                 paramsReport.add(new BasicNameValuePair("train_end_time", mDateFormat
                         .format(mEndTime)));
-                paramsReport.add(new BasicNameValuePair("user_id", "123"));
-                paramsReport.add(new BasicNameValuePair("user_phone", "189189189"));
+                paramsReport.add(new BasicNameValuePair("user_id", mUserId));
+                paramsReport.add(new BasicNameValuePair("user_phone", mUserPhone));
                 paramsReport.add(new BasicNameValuePair("app_list", mAppList == null ? "0"
                         : mAppList.substring(0, mAppList.length() - 1)));
                 paramsReport.add(new BasicNameValuePair("service_level", ""

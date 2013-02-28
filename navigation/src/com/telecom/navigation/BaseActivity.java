@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.Toast;
 
 public class BaseActivity extends FragmentActivity {
 
@@ -59,6 +61,12 @@ public class BaseActivity extends FragmentActivity {
         switch (item.getItemId()) {
         case R.id.menu_item_close:
             if (isFirstUse) {
+                if (TextUtils.isEmpty(mProId) || TextUtils.isEmpty(mIMSI)
+                        || TextUtils.isEmpty(mUserId) || TextUtils.isEmpty(mUserPhone)) {
+                    Toast.makeText(getApplicationContext(), R.string.msg_toast_not_enough_info,
+                            Toast.LENGTH_LONG).show();
+                    break;
+                }
                 Intent intent = new Intent(this, EvaluateActivity.class);
                 startActivity(intent);
             } else {

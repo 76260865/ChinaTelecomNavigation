@@ -118,7 +118,8 @@ public class AuthenticationActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Master result) {
 
-            if (result == null) {
+            if (result == null || TextUtils.isEmpty(result.getUserId())
+                    || TextUtils.isEmpty(result.getUserName())) {
                 Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
                         Toast.LENGTH_LONG).show();
                 return;

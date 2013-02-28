@@ -32,10 +32,9 @@
 
             <ImageView
                 android:id="@+id/img_app_screen"
-                android:layout_width="253dip"
+                android:layout_width="150dip"
                 android:layout_height="202dip"
-                android:layout_gravity="center"
-                android:background="@drawable/app_detail_background" />
+                android:layout_gravity="center" />
 
             <TextView
                 android:id="@+id/txt_app_introduce"
