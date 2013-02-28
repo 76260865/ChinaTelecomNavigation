@@ -17,30 +17,31 @@
             android:src="@drawable/text2" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_download"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="20dip"
-            android:background="@drawable/shadow_top" />
-
         <ListView
             android:id="@+id/lst_app"
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:cacheColorHint="#00000000" >
         </ListView>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="20dip"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/shadow_top" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dip"
+            android:layout_alignParentBottom="true"
             android:background="@drawable/shadow_bottom" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <include
         android:id="@+id/layout_detail"

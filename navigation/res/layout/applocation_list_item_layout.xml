@@ -2,8 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginBottom="18dip"
-    android:layout_marginTop="18dip"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center"
     android:orientation="horizontal" >
@@ -17,6 +15,8 @@
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="10dip"
         android:layout_weight="1"
         android:orientation="vertical" >
 
@@ -31,7 +31,6 @@
             android:id="@+id/info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="3dip"
             android:ellipsize="end"
             android:maxLines="4"
             android:textColor="@android:color/black"

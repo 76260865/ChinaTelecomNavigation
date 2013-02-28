@@ -114,10 +114,10 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 mImageAppScreenView.setImageBitmap(info.getAppScreenIcon());
             }
 
-            if (info.isDownloadComplete()) {
-                btnStartDownload.setEnabled(false);
+            if (info.getDownloadId() > 0) {
+                btnStartDownload.setText(R.string.btn_back_txt);
             } else {
-                btnStartDownload.setEnabled(true);
+                btnStartDownload.setText(R.string.btn_start_download_txt);
             }
             btnStartDownload.setOnClickListener(new OnClickListener() {
 
@@ -125,7 +125,9 @@ public class ApplicationDownloadActivity extends BaseActivity {
                 public void onClick(View v) {
                     mLayoutDetail.setVisibility(View.GONE);
                     mLayoutDownload.setVisibility(View.VISIBLE);
-                    downloadApk(position);
+                    if (info.getDownloadId() < 0) {
+                        downloadApk(position);
+                    }
                 }
             });
         }
@@ -243,6 +245,7 @@ public class ApplicationDownloadActivity extends BaseActivity {
         down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
                 | DownloadManager.Request.NETWORK_WIFI);
         down.setVisibleInDownloadsUi(true);
+        down.setTitle(info.getAppName());
         info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
         down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, info.fileName);

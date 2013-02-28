@@ -46,10 +46,11 @@ public class AuthenticationActivity extends BaseActivity {
 
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Toast.makeText(
-                getApplicationContext(),
-                "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" + dm.density
-                        + " densityDpi:" + dm.densityDpi, 1).show();
+        // Toast.makeText(
+        // getApplicationContext(),
+        // "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" +
+        // dm.density
+        // + " densityDpi:" + dm.densityDpi, 1).show();
         mLayoutInputNumber = findViewById(R.id.linear_input_number);
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);

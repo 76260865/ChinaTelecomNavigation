@@ -29,6 +29,8 @@ public class BaseActivity extends FragmentActivity {
 
     protected static String mAppList;
 
+    protected static String mDownloadUrl;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

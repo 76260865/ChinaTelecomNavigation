@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.telecom.model.Customer;
 import com.telecom.util.ApkFileUtil;
 import com.telecom.util.JsonUtil;
+import com.telecom.util.NetworkUtil;
 import com.telecom.view.CirclePageIndicator;
 
 public class AdvertisementActivity extends BaseActivity {
@@ -58,8 +59,6 @@ public class AdvertisementActivity extends BaseActivity {
     public static final String EXTRA_KEY_SHARE_FIRST = "extra_key_first";
 
     private TelephonyManager mTelephonyMgr;
-
-    private String mDownloadUrl;
 
     private String mFileName;
 
@@ -106,8 +105,6 @@ public class AdvertisementActivity extends BaseActivity {
         mGestureDetector = new GestureDetector(this, new MyGestureListener(getApplicationContext()));
 
         mStartTime = new Date();
-
-        new IMSITask().execute();
 
         mReceiver = new DownloadCompleteReceiver();
         registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
@@ -181,15 +178,11 @@ public class AdvertisementActivity extends BaseActivity {
 
                     @Override
                     public void onClick(View v) {
-                        SharedPreferences settings = getActivity().getSharedPreferences(
-                                EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
-                        boolean isFirstUse = settings.getBoolean(EXTRA_KEY_SHARE_FIRST, true);
-
-                        Intent intent = new Intent(getActivity(),
-                                isFirstUse ? AuthenticationActivity.class
-                                        : AppliactionCategoryActivity.class);
-                        startActivity(intent);
-
+                        if (!NetworkUtil.isNetworkConnected(getActivity())) {
+                            Toast.makeText(getActivity(), R.string.txt_connect_network,
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         ((AdvertisementActivity) getActivity()).downloadApk();
                     }
                 });
@@ -215,6 +208,7 @@ public class AdvertisementActivity extends BaseActivity {
         down.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
                 | DownloadManager.Request.NETWORK_WIFI);
         down.setVisibleInDownloadsUi(true);
+        down.setTitle(getString(R.string.download_title));
         mFileName = System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
         down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, mFileName);
@@ -270,50 +264,22 @@ public class AdvertisementActivity extends BaseActivity {
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (mPager.getCurrentItem() == mPager.getAdapter().getCount() - 1 && velocityX < 0) {
+            if (mPager.getCurrentItem() == mPager.getAdapter().getCount() - 1
+                    && (velocityX < 0 || !NetworkUtil
+                            .isNetworkConnected(AdvertisementActivity.this))) {
                 SharedPreferences settings = mContext.getSharedPreferences(EXTRA_KEY_SHARE_PREF,
                         Activity.MODE_PRIVATE);
                 boolean isFirstUse = settings.getBoolean(EXTRA_KEY_SHARE_FIRST, true);
 
-                Intent intent = new Intent(mContext, isFirstUse ? AuthenticationActivity.class
-                        : AppliactionCategoryActivity.class);
+                Intent intent = new Intent(
+                        mContext,
+                        isFirstUse && NetworkUtil.isNetworkConnected(AdvertisementActivity.this) ? AuthenticationActivity.class
+                                : AppliactionCategoryActivity.class);
                 startActivity(intent);
 
                 return true;
             }
             return super.onFling(e1, e2, velocityX, velocityY);
-        }
-
-    }
-
-    private class IMSITask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            Customer customer = JsonUtil.getCustomerInfoByIMSI(mIMSI);
-            if (customer != null) {
-                mProId = customer.getProdId();
-                mDownloadUrl = customer.getmApkUri();
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.add(Calendar.MINUTE, customer.getInvalidTime());
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    Date date = sdf.parse(customer.getmAccountTime());
-                    if (calendar.getTime().after(date)) {
-                        SharedPreferences settings = getSharedPreferences(
-                                AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
-                        Editor editor = settings.edit();
-                        editor.putBoolean(AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, false);
-                        editor.commit();
-                    }
-                } catch (ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            return null;
         }
     }
 }

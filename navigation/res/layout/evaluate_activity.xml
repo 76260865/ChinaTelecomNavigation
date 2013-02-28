@@ -84,6 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dip"
                     android:background="@drawable/button"
+                    android:onClick="onBtnExitClick"
                     android:text="@string/btn_exit_txt"
                     android:textSize="13sp" />
 
@@ -92,6 +93,7 @@
                     android:layout_width="120dip"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button"
+                    android:onClick="onBtbBackToMainClick"
                     android:text="@string/btn_back_to_main_txt"
                     android:textSize="13sp" />
             </LinearLayout>

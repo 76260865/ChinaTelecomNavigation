@@ -61,6 +61,12 @@ public class AppliactionCategoryActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        mBitmapCache.evictAll();
+        super.onDestroy();
+    }
+
     class MyPagerAdapter extends PagerAdapter {
         private ArrayList<ImageView> views = new ArrayList<ImageView>();
 

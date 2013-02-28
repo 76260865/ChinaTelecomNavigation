@@ -66,6 +66,8 @@ public class EvaluateActivity extends BaseActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_UP) {
+                Toast.makeText(getApplicationContext(), R.string.msg_toast_submit,
+                        Toast.LENGTH_LONG).show();
                 mEndTime = new Date();
 
                 List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
@@ -137,6 +139,20 @@ public class EvaluateActivity extends BaseActivity {
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public void onBtnExitClick(View view) {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public void onBtbBackToMainClick(View view) {
+        Intent intent = new Intent(this, AppliactionCategoryActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @Override
