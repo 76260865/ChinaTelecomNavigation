@@ -57,9 +57,6 @@ public class AuthenticationActivity extends BaseActivity {
         mTxtMaster = (TextView) findViewById(R.id.txt_master);
         mEditUserPhone = (EditText) findViewById(R.id.edit_user_phone);
 
-        mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        mIMSI = mTelephonyMgr.getSubscriberId();
-
         mImsiTask = new IMSITask(mTxtUserName);
         mImsiTask.execute();
     }

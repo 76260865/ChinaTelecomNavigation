@@ -70,7 +70,6 @@ public class EvaluateActivity extends BaseActivity {
                         Toast.LENGTH_LONG).show();
                 mEndTime = new Date();
 
-                // TODO:
                 List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
                 paramsReport.add(new BasicNameValuePair("opt", "report"));
                 paramsReport.add(new BasicNameValuePair("prod_id", mProId));

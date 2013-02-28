@@ -71,8 +71,6 @@ public class AdvertisementActivity extends BaseActivity {
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.advertisement_layout);
 
-        mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        mIMSI = mTelephonyMgr.getSubscriberId();
         mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
         SharedPreferences settings = getSharedPreferences(EXTRA_KEY_SHARE_PREF,

@@ -72,7 +72,8 @@ public class JsonUtil {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("opt", "customer"));
         // TODO: comment this
-        params.add(new BasicNameValuePair("imsi", imsi));
+        // params.add(new BasicNameValuePair("imsi", imsi));
+        params.add(new BasicNameValuePair("imsi", "460030497828541"));
         String customerResult = HttpUtil.doGet(CUSTOMER_URI, params);
         if (TextUtils.isEmpty(customerResult)) {
             return null;
@@ -106,7 +107,8 @@ public class JsonUtil {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("opt", "auth"));
         // TODO:comment this
-        params.add(new BasicNameValuePair("number", phoneNum));
+        // params.add(new BasicNameValuePair("number", phoneNum));
+        params.add(new BasicNameValuePair("number", "18980802828"));
         String customerResult = HttpUtil.doGet(CUSTOMER_URI, params);
 
         if (TextUtils.isEmpty(customerResult)) {
