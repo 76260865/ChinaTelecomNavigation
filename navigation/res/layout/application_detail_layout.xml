@@ -27,14 +27,18 @@
                 android:layout_marginBottom="5dip"
                 android:layout_marginLeft="20dip"
                 android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/img_app_screen"
-                android:layout_width="150dip"
-                android:layout_height="202dip"
-                android:layout_gravity="center" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="50dip"
+                android:layout_marginRight="50dip"
+                android:layout_marginTop="10dip" />
 
             <TextView
                 android:id="@+id/txt_app_introduce"
@@ -42,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dip"
                 android:textColor="@android:color/black"
-                android:textSize="10sp" />
+                android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
 

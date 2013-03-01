@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,13 +43,6 @@ public class AuthenticationActivity extends BaseActivity {
 
         mPhoneNum = getPhoneNum();
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        // Toast.makeText(
-        // getApplicationContext(),
-        // "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" +
-        // dm.density
-        // + " densityDpi:" + dm.densityDpi, 1).show();
         mLayoutInputNumber = findViewById(R.id.linear_input_number);
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
         mTxtUserName = (TextView) findViewById(R.id.txt_user_name);
@@ -105,7 +97,7 @@ public class AuthenticationActivity extends BaseActivity {
 
         @Override
         protected Master doInBackground(Void... params) {
-            Master master = JsonUtil.getMasterInfo(mPhoneNum);
+            Master master = JsonUtil.getMasterInfo(mUserPhone);
             if (master != null) {
                 mUserId = master.getUserId();
             }

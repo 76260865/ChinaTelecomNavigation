@@ -1,8 +1,11 @@
 package com.telecom.navigation;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -10,10 +13,13 @@ import android.os.Bundle;
 import android.support.v4.util.LruCache;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.Toast;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.telecom.view.CirclePageIndicator;
 
@@ -50,6 +56,38 @@ public class AppliactionCategoryActivity extends BaseActivity {
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         indicator.getBackground().setAlpha(0);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//        Toast.makeText(
+//                getApplicationContext(),
+//                "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" + dm.density
+//                        + " densityDpi:" + dm.densityDpi, 1).show();
+
+        if ((dm.density == 1.5 || dm.density == 2) && dm.widthPixels == 640) {
+            ImageView view = (ImageView) findViewById(R.id.img_user_guide);
+            Bitmap bitmap = getImageFromAssetsFile("teaching_bg.jpg");
+            view.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 170));
+        }
+    }
+
+    /**
+     * 从Assets中读取图片
+     */
+    private Bitmap getImageFromAssetsFile(String fileName) {
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return image;
+
     }
 
     private Bitmap getBitmapFromCache(Integer key) {

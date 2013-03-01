@@ -33,8 +33,9 @@ public class SplashScreen extends BaseActivity {
         setContentView(R.layout.splash_screen);
 
         mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        // mIMSI = mTelephonyMgr.getSubscriberId();
-        mIMSI = "460030497828541";
+        // TODO: comment
+        mIMSI = mTelephonyMgr.getSubscriberId();
+        // mIMSI = "460030497828541";
 
         SharedPreferences settings = getSharedPreferences(
                 AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
