@@ -25,16 +25,16 @@
 
         <ImageView
             android:layout_width="@dimen/img_avatar_height"
-            android:layout_height="@dimen/img_avatar_height"
+            android:layout_height="0dip"
             android:layout_gravity="center"
-            android:layout_margin="10dip"
+            android:layout_margin="5dip"
+            android:layout_weight="1"
             android:src="@drawable/heart" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="0dip"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:src="@drawable/thanks_text" />
     </LinearLayout>
 

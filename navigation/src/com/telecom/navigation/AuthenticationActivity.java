@@ -1,10 +1,8 @@
 package com.telecom.navigation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -24,13 +22,9 @@ public class AuthenticationActivity extends BaseActivity {
 
     private TextView mTxtMaster;
 
-    private String mPhoneNum;
-
     private MyAsyncTask mMyAsyncTask;
 
     private IMSITask mImsiTask;
-
-    private TelephonyManager mTelephonyMgr;
 
     private EditText mEditUserPhone;
 
@@ -40,8 +34,6 @@ public class AuthenticationActivity extends BaseActivity {
 
         // The look of this sample is set via a style in the manifest
         setContentView(R.layout.authentication_activity);
-
-        mPhoneNum = getPhoneNum();
 
         mLayoutInputNumber = findViewById(R.id.linear_input_number);
         mLayoutLinearAuth = findViewById(R.id.linear_auth);
@@ -80,11 +72,6 @@ public class AuthenticationActivity extends BaseActivity {
     public void onBtnNextClick(View v) {
         Intent intent = new Intent(this, AppliactionCategoryActivity.class);
         startActivity(intent);
-    }
-
-    private String getPhoneNum() {
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        return tm.getLine1Number();
     }
 
     private class MyAsyncTask extends AsyncTask<Void, Void, Master> {

@@ -4,5 +4,6 @@
     <dimen name="title_bar_height">37dip</dimen>
     <dimen name="img_avatar_height">170dip</dimen>
     <dimen name="avatar_margin">20dip</dimen>
+    <dimen name="bottom_bar_height">130dip</dimen>
 
 </resources>

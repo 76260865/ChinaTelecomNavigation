@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <dimen name="title_bar_height">40dip</dimen>
+    <dimen name="img_avatar_height">170dip</dimen>
     <dimen name="avatar_margin">30dip</dimen>
+    <dimen name="bottom_bar_height">160dip</dimen>
 
 </resources>

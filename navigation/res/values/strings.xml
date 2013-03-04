@@ -45,5 +45,6 @@
     <string name="msg_toast_submit">提交中</string>
     <string name="msg_toast_contact_server">正在读取服务器信息</string>
     <string name="msg_toast_not_enough_info">未获得基本信息，不能评分，请退出程序并联网后重试</string>
+    <string name="btn_evaluate_txt">提交</string>
 
 </resources>

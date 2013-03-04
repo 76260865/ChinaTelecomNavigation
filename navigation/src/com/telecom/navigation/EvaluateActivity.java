@@ -18,9 +18,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,6 +30,7 @@ public class EvaluateActivity extends BaseActivity {
     private RatingBar mRatingBar;
     private TextView mTxtTitle;
     private Button btn_back_to_main;
+    private View mLinearRating;
 
     private SimpleDateFormat mDateFormat;
 
@@ -42,7 +41,7 @@ public class EvaluateActivity extends BaseActivity {
         setContentView(R.layout.evaluate_activity);
 
         mRatingBar = (RatingBar) findViewById(R.id.ratingbar);
-        mRatingBar.setOnTouchListener(mOnTouchListener);
+        mLinearRating = findViewById(R.id.linear_rating);
         mLinearBottom = findViewById(R.id.linear_bottom);
         mTxtTitle = (TextView) findViewById(R.id.txt_title);
         btn_back_to_main = (Button) findViewById(R.id.btn_back_to_main);
@@ -53,7 +52,7 @@ public class EvaluateActivity extends BaseActivity {
 
         if (!isFirstUse) {
             mTxtTitle.setVisibility(View.GONE);
-            mRatingBar.setVisibility(View.GONE);
+            mLinearRating.setVisibility(View.GONE);
             btn_back_to_main.setVisibility(View.GONE);
             mLinearBottom.setVisibility(View.VISIBLE);
         }
@@ -61,45 +60,34 @@ public class EvaluateActivity extends BaseActivity {
         mDateFormat = new SimpleDateFormat("yyyy-MM-dd%HH:mm:ss");
     }
 
-    private OnTouchListener mOnTouchListener = new OnTouchListener() {
+    public void onBtnSubmitClick(View view) {
+        Toast.makeText(getApplicationContext(), R.string.msg_toast_submit, Toast.LENGTH_LONG)
+                .show();
+        mEndTime = new Date();
 
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_UP) {
-                Toast.makeText(getApplicationContext(), R.string.msg_toast_submit,
-                        Toast.LENGTH_LONG).show();
-                mEndTime = new Date();
+        List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
+        paramsReport.add(new BasicNameValuePair("opt", "report"));
+        paramsReport.add(new BasicNameValuePair("prod_id", mProId));
+        paramsReport.add(new BasicNameValuePair("imsi", mIMSI));
+        paramsReport
+                .add(new BasicNameValuePair("train_start_time", mDateFormat.format(mStartTime)));
+        paramsReport.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
+        paramsReport.add(new BasicNameValuePair("user_id", mUserId));
+        paramsReport.add(new BasicNameValuePair("user_phone", mUserPhone));
+        paramsReport.add(new BasicNameValuePair("app_list", mAppList == null ? "0" : mAppList
+                .substring(0, mAppList.length() - 1)));
+        paramsReport
+                .add(new BasicNameValuePair("service_level", "" + (int) mRatingBar.getRating()));
 
-                List<BasicNameValuePair> paramsReport = new ArrayList<BasicNameValuePair>();
-                paramsReport.add(new BasicNameValuePair("opt", "report"));
-                paramsReport.add(new BasicNameValuePair("prod_id", mProId));
-                paramsReport.add(new BasicNameValuePair("imsi", mIMSI));
-                paramsReport.add(new BasicNameValuePair("train_start_time", mDateFormat
-                        .format(mStartTime)));
-                paramsReport.add(new BasicNameValuePair("train_end_time", mDateFormat
-                        .format(mEndTime)));
-                paramsReport.add(new BasicNameValuePair("user_id", mUserId));
-                paramsReport.add(new BasicNameValuePair("user_phone", mUserPhone));
-                paramsReport.add(new BasicNameValuePair("app_list", mAppList == null ? "0"
-                        : mAppList.substring(0, mAppList.length() - 1)));
-                paramsReport.add(new BasicNameValuePair("service_level", ""
-                        + (int) mRatingBar.getRating()));
+        List<BasicNameValuePair> paramsStudy = new ArrayList<BasicNameValuePair>();
+        paramsStudy.add(new BasicNameValuePair("opt", "study"));
+        paramsStudy.add(new BasicNameValuePair("prod_id", mProId));
+        paramsStudy.add(new BasicNameValuePair("imsi", mIMSI));
+        paramsStudy.add(new BasicNameValuePair("train_start_time", mDateFormat.format(mStartTime)));
+        paramsStudy.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
 
-                List<BasicNameValuePair> paramsStudy = new ArrayList<BasicNameValuePair>();
-                paramsStudy.add(new BasicNameValuePair("opt", "study"));
-                paramsStudy.add(new BasicNameValuePair("prod_id", mProId));
-                paramsStudy.add(new BasicNameValuePair("imsi", mIMSI));
-                paramsStudy.add(new BasicNameValuePair("train_start_time", mDateFormat
-                        .format(mStartTime)));
-                paramsStudy.add(new BasicNameValuePair("train_end_time", mDateFormat
-                        .format(mEndTime)));
-
-                new EvaluateTask(paramsReport, paramsStudy).execute();
-                return true;
-            }
-            return false;
-        }
-    };
+        new EvaluateTask(paramsReport, paramsStudy).execute();
+    }
 
     private class EvaluateTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -125,7 +113,7 @@ public class EvaluateActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Boolean result) {
             if (!result) {
-                mRatingBar.setVisibility(View.GONE);
+                mLinearRating.setVisibility(View.GONE);
                 mLinearBottom.setVisibility(View.VISIBLE);
                 mTxtTitle.setText(R.string.txt_thanks_evaluate);
 

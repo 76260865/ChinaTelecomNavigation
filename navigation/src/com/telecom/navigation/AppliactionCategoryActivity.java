@@ -1,25 +1,19 @@
 package com.telecom.navigation;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.util.LruCache;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.LinearLayout;
 
 import com.telecom.view.CirclePageIndicator;
 
@@ -35,9 +29,15 @@ public class AppliactionCategoryActivity extends BaseActivity {
     // Use 2M memory for this memory cache.
     private static final int cacheSize = 1024 * 1024 * 2;
 
-    protected final int[] CONTENT = new int[] { R.drawable.type1, R.drawable.type2,
-            R.drawable.type3, R.drawable.type4, R.drawable.type5, R.drawable.type6,
-            R.drawable.type7, R.drawable.type8 };
+    protected final int[] CONTENT = new int[] { R.drawable.ic_type1, R.drawable.ic_type2,
+            R.drawable.ic_type3, R.drawable.ic_type4, R.drawable.ic_type5, R.drawable.ic_type6,
+            R.drawable.ic_type7, R.drawable.ic_type8 };
+
+    protected final int[] BACKGROUND = new int[] { R.drawable.ic_type1_background,
+            R.drawable.ic_type2_background, R.drawable.ic_type3_background,
+            R.drawable.ic_type4_background, R.drawable.ic_type5_background,
+            R.drawable.ic_type6_background, R.drawable.ic_type7_background,
+            R.drawable.ic_type8_background };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,38 +56,6 @@ public class AppliactionCategoryActivity extends BaseActivity {
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
         indicator.getBackground().setAlpha(0);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//        Toast.makeText(
-//                getApplicationContext(),
-//                "屏幕分辨率为:" + dm.widthPixels + " * " + dm.heightPixels + "density:" + dm.density
-//                        + " densityDpi:" + dm.densityDpi, 1).show();
-
-        if ((dm.density == 1.5 || dm.density == 2) && dm.widthPixels == 640) {
-            ImageView view = (ImageView) findViewById(R.id.img_user_guide);
-            Bitmap bitmap = getImageFromAssetsFile("teaching_bg.jpg");
-            view.setBackgroundDrawable(new BitmapDrawable(bitmap));
-            view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 170));
-        }
-    }
-
-    /**
-     * 从Assets中读取图片
-     */
-    private Bitmap getImageFromAssetsFile(String fileName) {
-        Bitmap image = null;
-        AssetManager am = getResources().getAssets();
-        try {
-            InputStream is = am.open(fileName);
-            image = BitmapFactory.decodeStream(is);
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
-
     }
 
     private Bitmap getBitmapFromCache(Integer key) {
@@ -106,26 +74,27 @@ public class AppliactionCategoryActivity extends BaseActivity {
     }
 
     class MyPagerAdapter extends PagerAdapter {
-        private ArrayList<ImageView> views = new ArrayList<ImageView>();
+        private ArrayList<LinearLayout> views = new ArrayList<LinearLayout>();
 
         public MyPagerAdapter() {
 
             for (int i = 0; i < CONTENT.length; i++) {
-                ImageView view = (ImageView) mLayoutInflater.inflate(
-                        R.layout.advertisement_item_layout, null);
+                LinearLayout view = (LinearLayout) mLayoutInflater.inflate(
+                        R.layout.application_category_item_layout, null);
                 views.add(view);
             }
         }
 
         @Override
         public Object instantiateItem(View v, final int position) {
-            ImageView view = views.get(position);
+            LinearLayout view = views.get(position);
             Bitmap bitmap = getBitmapFromCache(position);
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(getResources(), CONTENT[position]);
             }
-            // view.setBackgroundResource(CONTENT[position]);
-            view.setBackgroundDrawable(new BitmapDrawable(bitmap));
+            ImageView imgView = (ImageView) view.findViewById(R.id.img_advtisement);
+            imgView.setImageBitmap(bitmap);
+            view.setBackgroundResource(BACKGROUND[position]);
 
             ((ViewPager) v).addView(view);
             view.setOnClickListener(new OnClickListener() {
@@ -143,8 +112,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
         @Override
         public void destroyItem(View v, int position, Object arg2) {
-            ImageView view = views.get(position);
-            view.setBackgroundDrawable(null);
+            LinearLayout view = views.get(position);
             ((ViewPager) v).removeView(view);
         }
 

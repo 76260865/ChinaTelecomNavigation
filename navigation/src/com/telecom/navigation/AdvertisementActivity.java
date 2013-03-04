@@ -1,9 +1,6 @@
 package com.telecom.navigation;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
@@ -13,17 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -37,9 +31,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.telecom.model.Customer;
 import com.telecom.util.ApkFileUtil;
-import com.telecom.util.JsonUtil;
 import com.telecom.util.NetworkUtil;
 import com.telecom.view.CirclePageIndicator;
 
@@ -57,8 +49,6 @@ public class AdvertisementActivity extends BaseActivity {
     public static final String EXTRA_KEY_SHARE_PREF = "extra_key_share_pref";
 
     public static final String EXTRA_KEY_SHARE_FIRST = "extra_key_first";
-
-    private TelephonyManager mTelephonyMgr;
 
     private String mFileName;
 
