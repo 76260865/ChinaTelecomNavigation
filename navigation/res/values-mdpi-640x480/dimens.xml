@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <dimen name="bottom_bar_height">100dip</dimen>
-    <dimen name="title_bar_height">30dip</dimen>
-    <dimen name="pade_indicator_margin_bottom">10dip</dimen>
-    <dimen name="avatar_margin">10dip</dimen>
-
-</resources>
