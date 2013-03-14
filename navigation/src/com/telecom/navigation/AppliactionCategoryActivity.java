@@ -2,6 +2,9 @@ package com.telecom.navigation;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.telecom.view.CirclePageIndicator;
 
@@ -60,6 +64,32 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
     private Bitmap getBitmapFromCache(Integer key) {
         return mBitmapCache.get(key);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDialog(0);
+    }
+
+    @Override
+    @Deprecated
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog = new AlertDialog.Builder(this).setIcon(android.R.drawable.btn_star)
+                .setTitle("").setMessage("确定退出程序吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        exit();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).create();
+
+        return dialog;
     }
 
     public void onImgUserGuideClick(View view) {

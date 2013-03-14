@@ -79,7 +79,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:numStars="5"
-                    android:rating="3" />
+                    android:rating="3"
+                    android:stepSize="1" />
 
                 <Button
                     android:layout_width="72dip"

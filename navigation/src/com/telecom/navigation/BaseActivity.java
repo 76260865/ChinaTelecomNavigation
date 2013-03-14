@@ -70,16 +70,20 @@ public class BaseActivity extends FragmentActivity {
                 Intent intent = new Intent(this, EvaluateActivity.class);
                 startActivity(intent);
             } else {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                android.os.Process.killProcess(android.os.Process.myPid());
+                exit();
             }
             break;
         case R.id.menu_item_about:
             break;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    protected void exit() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
