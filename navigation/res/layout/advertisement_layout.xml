@@ -26,7 +26,8 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
         <com.telecom.view.CirclePageIndicator
             android:id="@+id/indicator"
@@ -36,6 +37,7 @@
             android:layout_marginBottom="20dip"
             android:background="@android:color/transparent"
             android:padding="10dip"
+            android:visibility="gone"
             pageindcator:radius="5dip"
             pageindcator:strokeColor="@android:color/black"
             pageindcator:strokeWidth="2dip" />

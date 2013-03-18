@@ -130,4 +130,31 @@ public class JsonUtil {
 
         return masterInfo;
     }
+
+    public static String[] getAdvertisements(int height) {
+        String[] avertisements = new String[3];
+
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("opt", "resolution"));
+        params.add(new BasicNameValuePair("height", height + ""));
+        String customerResult = HttpUtil.doGet(CUSTOMER_URI, params);
+
+        if (TextUtils.isEmpty(customerResult)) {
+            return null;
+        }
+
+        try {
+            JSONObject object = new JSONObject(customerResult);
+            String result = object.getString(ResultKey);
+            if (TextUtils.equals(result, ResultSuccess)) {
+                avertisements[0] = object.getString("Ad1");
+                avertisements[1] = object.getString("Ad2");
+                avertisements[2] = object.getString("Ad3");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return avertisements;
+    }
 }

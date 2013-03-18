@@ -1,6 +1,11 @@
 package com.telecom.navigation;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 import android.app.Activity;
@@ -11,7 +16,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -19,6 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -32,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.telecom.util.ApkFileUtil;
+import com.telecom.util.JsonUtil;
 import com.telecom.util.NetworkUtil;
 import com.telecom.view.CirclePageIndicator;
 
@@ -54,6 +65,8 @@ public class AdvertisementActivity extends BaseActivity {
 
     private long mDownloadId = -1l;
 
+    private DisplayMetrics mDisplayMetrics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +80,17 @@ public class AdvertisementActivity extends BaseActivity {
                 Activity.MODE_PRIVATE);
         boolean isFirstUse = settings.getBoolean(EXTRA_KEY_SHARE_FIRST, true);
 
-        if (isFirstUse) {
-            mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager(), new int[] {
-                    R.drawable.ad1, R.drawable.ad2, R.drawable.ad3 });
+        if (!isFirstUse) {
+            bmpAdvertisements = new Bitmap[] { bmpAdvertisements[0], bmpAdvertisements[1] };
+            mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager(),
+                    bmpAdvertisements);
         } else {
-            mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager(), new int[] {
-                    R.drawable.ad1, R.drawable.ad2 });
+            mAdapter = new AdvertisementFragmentAdapter(getSupportFragmentManager(),
+                    bmpAdvertisements);
         }
 
         mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setVisibility(View.VISIBLE);
         mPager.setAdapter(mAdapter);
 
         mPager.setOnTouchListener(new OnTouchListener() {
@@ -87,6 +102,7 @@ public class AdvertisementActivity extends BaseActivity {
         });
 
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        indicator.setVisibility(View.VISIBLE);
         indicator.setViewPager(mPager);
         indicator.getBackground().setAlpha(0);
 
@@ -96,6 +112,7 @@ public class AdvertisementActivity extends BaseActivity {
 
         mReceiver = new DownloadCompleteReceiver();
         registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+
     }
 
     @Override
@@ -110,11 +127,11 @@ public class AdvertisementActivity extends BaseActivity {
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
-        protected int[] CONTENT;
+        protected Bitmap[] CONTENT;
 
         private int mCount;
 
-        public AdvertisementFragmentAdapter(FragmentManager fm, int[] content) {
+        public AdvertisementFragmentAdapter(FragmentManager fm, Bitmap[] content) {
             super(fm);
             CONTENT = content;
             mCount = CONTENT.length;
@@ -122,7 +139,7 @@ public class AdvertisementActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length]);
+            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length], position);
         }
 
         @Override
@@ -141,12 +158,15 @@ public class AdvertisementActivity extends BaseActivity {
     public final static class AdvertisementFragment extends Fragment {
         private static final String KEY_CONTENT = "AdvertisementFragment:Content";
 
-        private int mContent;
+        private int mIndex = 0;
 
-        public static AdvertisementFragment newInstance(int content) {
+        private Bitmap mContent;
+
+        public static AdvertisementFragment newInstance(Bitmap content, int index) {
             AdvertisementFragment fragment = new AdvertisementFragment();
 
             fragment.mContent = content;
+            fragment.mIndex = index;
 
             return fragment;
         }
@@ -154,14 +174,11 @@ public class AdvertisementActivity extends BaseActivity {
         @Override
         public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            if ((savedInstanceState != null) && savedInstanceState.containsKey(KEY_CONTENT)) {
-                mContent = savedInstanceState.getInt(KEY_CONTENT);
-            }
 
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
-            view.setBackgroundResource(mContent);
+            view.setBackgroundDrawable(new BitmapDrawable(mContent));
 
-            if (mContent == R.drawable.ad3) {
+            if (mIndex == 2) {
                 view.setOnClickListener(new OnClickListener() {
 
                     @Override
@@ -176,12 +193,6 @@ public class AdvertisementActivity extends BaseActivity {
                 });
             }
             return view;
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            outState.putInt(KEY_CONTENT, mContent);
         }
     }
 
@@ -268,4 +279,6 @@ public class AdvertisementActivity extends BaseActivity {
             return super.onFling(e1, e2, velocityX, velocityY);
         }
     }
+
+    public static Bitmap[] bmpAdvertisements = new Bitmap[3];
 }

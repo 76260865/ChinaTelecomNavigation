@@ -1,5 +1,10 @@
 package com.telecom.navigation;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -10,11 +15,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.telecom.model.Customer;
@@ -54,6 +63,10 @@ public class SplashScreen extends BaseActivity {
         editor.commit();
 
         new IMSITask().execute();
+        mDisplayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+
+        new DownLoadAvertisementTask().execute();
     }
 
     private Handler mHandler = new Handler() {
@@ -62,6 +75,7 @@ public class SplashScreen extends BaseActivity {
         public void handleMessage(Message msg) {
             Intent intent = new Intent(SplashScreen.this, AdvertisementActivity.class);
             startActivity(intent);
+            AdvertisementActivity.bmpAdvertisements = bmpAdvertisements;
             SplashScreen.this.finish();
         }
     };
@@ -100,8 +114,50 @@ public class SplashScreen extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            mHandler.sendEmptyMessage(0);
+            // mHandler.sendEmptyMessage(0);
         }
     }
 
+    private Bitmap[] bmpAdvertisements = new Bitmap[3];
+    private static final String BASE_URI = "http://118.121.17.250";
+    private DisplayMetrics mDisplayMetrics;
+
+    private class DownLoadAvertisementTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String[] bmpUris = JsonUtil.getAdvertisements(mDisplayMetrics.heightPixels);
+
+            for (int i = 0; i < bmpUris.length; i++) {
+                String uri = bmpUris[i];
+                if (!TextUtils.isEmpty(uri)) {
+                    bmpAdvertisements[i] = getBitmapFromUrl(BASE_URI + uri);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mHandler.sendEmptyMessage(0);
+        }
+
+    }
+
+    private Bitmap getBitmapFromUrl(String imgUrl) {
+        URL url;
+        Bitmap bitmap = null;
+        try {
+            url = new URL(imgUrl);
+            InputStream is = url.openConnection().getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
+            bitmap = BitmapFactory.decodeStream(bis);
+            bis.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 }
