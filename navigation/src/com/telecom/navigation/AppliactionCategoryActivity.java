@@ -71,27 +71,6 @@ public class AppliactionCategoryActivity extends BaseActivity {
         showDialog(0);
     }
 
-    @Override
-    @Deprecated
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog = new AlertDialog.Builder(this).setIcon(android.R.drawable.btn_star)
-                .setTitle("").setMessage("确定退出程序吗？")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        exit();
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                }).create();
-
-        return dialog;
-    }
-
     public void onImgUserGuideClick(View view) {
         Intent intent = new Intent(this, UserGuideActivity.class);
         startActivity(intent);

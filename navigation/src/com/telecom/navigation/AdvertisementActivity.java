@@ -139,7 +139,8 @@ public class AdvertisementActivity extends BaseActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length], position);
+            return AdvertisementFragment.newInstance(CONTENT[position % CONTENT.length], position,
+                    mCount);
         }
 
         @Override
@@ -162,11 +163,14 @@ public class AdvertisementActivity extends BaseActivity {
 
         private Bitmap mContent;
 
-        public static AdvertisementFragment newInstance(Bitmap content, int index) {
+        private int mCount = 0;
+
+        public static AdvertisementFragment newInstance(Bitmap content, int index, int count) {
             AdvertisementFragment fragment = new AdvertisementFragment();
 
             fragment.mContent = content;
             fragment.mIndex = index;
+            fragment.mCount = count;
 
             return fragment;
         }
@@ -178,7 +182,7 @@ public class AdvertisementActivity extends BaseActivity {
             ImageView view = (ImageView) inflater.inflate(R.layout.advertisement_item_layout, null);
             view.setBackgroundDrawable(new BitmapDrawable(mContent));
 
-            if (mIndex == 2) {
+            if (mIndex == mCount - 1) {
                 view.setOnClickListener(new OnClickListener() {
 
                     @Override
@@ -194,6 +198,11 @@ public class AdvertisementActivity extends BaseActivity {
             }
             return view;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDialog(0);
     }
 
     private void downloadApk() {

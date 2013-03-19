@@ -52,7 +52,7 @@ public class SplashScreen extends BaseActivity {
         if (isFirstUse) {
             int stringId = NetworkUtil.isNetworkConnected(this) ? R.string.msg_toast_contact_server
                     : R.string.txt_connect_network;
-            Toast.makeText(getApplicationContext(), stringId, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), stringId, Toast.LENGTH_SHORT).show();
         }
 
         Editor editor = settings.edit();
@@ -122,11 +122,13 @@ public class SplashScreen extends BaseActivity {
     private static final String BASE_URI = "http://118.121.17.250";
     private DisplayMetrics mDisplayMetrics;
 
-    private class DownLoadAvertisementTask extends AsyncTask<Void, Void, Void> {
+    private class DownLoadAvertisementTask extends AsyncTask<Void, Void, Boolean> {
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             String[] bmpUris = JsonUtil.getAdvertisements(mDisplayMetrics.heightPixels);
+            if (bmpUris == null)
+                return false;
 
             for (int i = 0; i < bmpUris.length; i++) {
                 String uri = bmpUris[i];
@@ -134,12 +136,14 @@ public class SplashScreen extends BaseActivity {
                     bmpAdvertisements[i] = getBitmapFromUrl(BASE_URI + uri);
                 }
             }
-            return null;
+            return true;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            mHandler.sendEmptyMessage(0);
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                mHandler.sendEmptyMessage(0);
+            }
         }
 
     }

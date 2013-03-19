@@ -1,8 +1,12 @@
 package com.telecom.navigation;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,6 +45,7 @@ public class BaseActivity extends FragmentActivity {
         SharedPreferences settings = getSharedPreferences(
                 AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
         isFirstUse = settings.getBoolean(AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, true);
+        mActivitis.add(this);
     }
 
     @Override
@@ -70,7 +75,7 @@ public class BaseActivity extends FragmentActivity {
                 Intent intent = new Intent(this, EvaluateActivity.class);
                 startActivity(intent);
             } else {
-                exit();
+                showDialog(0);
             }
             break;
         case R.id.menu_item_about:
@@ -79,11 +84,38 @@ public class BaseActivity extends FragmentActivity {
         return super.onMenuItemSelected(featureId, item);
     }
 
+    @Override
+    @Deprecated
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog = new AlertDialog.Builder(this).setIcon(android.R.drawable.btn_star)
+                .setTitle("").setMessage("确定退出程序吗？")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        exit();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).create();
+
+        return dialog;
+    }
+
     protected void exit() {
+        for (Activity activity : mActivitis) {
+            activity.finish();
+        }
+
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
     }
+
+    public static ArrayList<Activity> mActivitis = new ArrayList<Activity>();
 }

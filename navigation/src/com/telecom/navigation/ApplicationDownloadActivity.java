@@ -82,15 +82,18 @@ public class ApplicationDownloadActivity extends BaseActivity {
 
         int group = getIntent().getIntExtra("position", 0);
         new AppListDownloadTask(group).execute();
-        showDialog(0);
+        showDialog(1);
     }
 
     @Override
     @Deprecated
     protected Dialog onCreateDialog(int id) {
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setCancelable(true);
-        return mProgressDialog;
+        if (id == 1) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(true);
+            return mProgressDialog;
+        }
+        return super.onCreateDialog(id);
     }
 
     private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
