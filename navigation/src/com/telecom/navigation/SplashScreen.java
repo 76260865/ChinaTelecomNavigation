@@ -43,8 +43,8 @@ public class SplashScreen extends BaseActivity {
 
         mTelephonyMgr = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // TODO: comment
-        mIMSI = mTelephonyMgr.getSubscriberId();
-        // mIMSI = "460030497828541";
+//        mIMSI = mTelephonyMgr.getSubscriberId();
+         mIMSI = "460030497828541";
 
         SharedPreferences settings = getSharedPreferences(
                 AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
