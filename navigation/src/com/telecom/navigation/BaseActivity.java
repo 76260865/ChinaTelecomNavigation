@@ -1,7 +1,13 @@
 package com.telecom.navigation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.http.message.BasicNameValuePair;
+
+import com.telecom.util.HttpUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,11 +15,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -93,7 +102,15 @@ public class BaseActivity extends FragmentActivity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        exit();
+                        SharedPreferences settings = getSharedPreferences(
+                                AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
+                        boolean isFirstUse = settings.getBoolean(
+                                AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, true);
+                        if (!isFirstUse) {
+                            postStudy();
+                        } else {
+                            exit();
+                        }
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
@@ -103,6 +120,41 @@ public class BaseActivity extends FragmentActivity {
                 }).create();
 
         return dialog;
+    }
+
+    private void postStudy() {
+        mEndTime = new Date();
+        SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd%HH:mm:ss");
+        List<BasicNameValuePair> paramsStudy = new ArrayList<BasicNameValuePair>();
+        paramsStudy.add(new BasicNameValuePair("opt", "study"));
+        paramsStudy.add(new BasicNameValuePair("prod_id", mProId));
+        paramsStudy.add(new BasicNameValuePair("imsi", mIMSI));
+        paramsStudy.add(new BasicNameValuePair("train_start_time", mDateFormat.format(mStartTime)));
+        paramsStudy.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
+
+        new EvaluateTask(paramsStudy).execute();
+    }
+
+    private class EvaluateTask extends AsyncTask<Void, Void, Boolean> {
+
+        private List<BasicNameValuePair> mParamsStudy;
+
+        public EvaluateTask(List<BasicNameValuePair> paramsStudy) {
+            mParamsStudy = paramsStudy;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String resultStudy = HttpUtil.doGet("http://118.121.17.250/bass/AppRequest",
+                    mParamsStudy);
+
+            return TextUtils.isEmpty(resultStudy);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            exit();
+        }
     }
 
     protected void exit() {

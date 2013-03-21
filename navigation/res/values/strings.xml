@@ -36,7 +36,7 @@
     <string name="str_format_input_phone">请输入电话号码</string>
     <string name="msg_get_app_list_failed">获取应用列表失败</string>
     <string name="msg_download_complete">下载完成</string>
-    <string name="msg_download_failed">下载完成</string>
+    <string name="msg_download_failed">下载失败</string>
     <string name="btn_install_txt">安装</string>
     <string name="btn_run_txt">运行</string>
     <string name="msg_submit_error">提交出错</string>

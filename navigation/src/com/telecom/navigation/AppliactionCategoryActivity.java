@@ -45,6 +45,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.telecom.model.AppInfo;
+import com.telecom.navigation.ApplicationDownloadActivity.DownloadCompleteReceiver;
 import com.telecom.util.ApkFileUtil;
 import com.telecom.util.JsonUtil;
 import com.telecom.view.CirclePageIndicator;
@@ -80,6 +81,8 @@ public class AppliactionCategoryActivity extends BaseActivity {
     private MyAdapter mAdapater;
 
     private ArrayList<AppInfo> mAppInfoList = new ArrayList<AppInfo>();
+
+    private ArrayList<AppInfo> mAllAppInfoList = new ArrayList<AppInfo>();
 
     private DownloadManager mDownloadManager;
 
@@ -126,6 +129,8 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
         mLayoutDownload = findViewById(R.id.layout_download);
         mLayoutDetail = findViewById(R.id.layout_detail);
+        mReceiver = new DownloadCompleteReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     @Override
@@ -323,7 +328,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
                                 .show();
                         Log.d(TAG, " download complete! id : " + downId);
 
-                        for (AppInfo info : mAppInfoList) {
+                        for (AppInfo info : mAllAppInfoList) {
                             if (info.getDownloadId() == downId) {
                                 info.setDownloadComplete(true);
                                 File path = Environment
@@ -340,9 +345,9 @@ public class AppliactionCategoryActivity extends BaseActivity {
                                 if (packageInfo != null) {
                                     info.setPackageName(packageInfo.packageName);
                                 }
-                                
-                                
-                                ApkFileUtil.installApkFile(getApplicationContext(), info.getFilePath());
+
+                                ApkFileUtil.installApkFile(getApplicationContext(),
+                                        info.getFilePath());
                                 mAppList += info.getAppId() + ",";
                                 break;
                             }
@@ -374,6 +379,11 @@ public class AppliactionCategoryActivity extends BaseActivity {
         @Override
         protected Void doInBackground(Void... params) {
             mAppInfoList = JsonUtil.getAppList(mPosition);
+            for (AppInfo info : mAppInfoList) {
+                if (!mAllAppInfoList.contains(mAppInfoList)) {
+                    mAllAppInfoList.add(info);
+                }
+            }
             return null;
         }
 

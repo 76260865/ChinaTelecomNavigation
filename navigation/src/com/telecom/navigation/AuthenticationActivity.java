@@ -135,7 +135,7 @@ public class AuthenticationActivity extends BaseActivity {
                     || TextUtils.isEmpty(result.getUserName())) {
                 Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
                         Toast.LENGTH_LONG).show();
-                return;
+//                return;
             }
 
             mLayoutInputNumber.setVisibility(View.GONE);
