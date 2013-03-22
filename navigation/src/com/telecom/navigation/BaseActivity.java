@@ -104,9 +104,8 @@ public class BaseActivity extends FragmentActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences settings = getSharedPreferences(
                                 AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
-                        boolean isFirstUse = settings.getBoolean(
-                                AdvertisementActivity.EXTRA_KEY_SHARE_FIRST, true);
-                        if (!isFirstUse) {
+                        boolean isStudy = settings.getBoolean("is_study", false);
+                        if (isStudy) {
                             postStudy();
                         } else {
                             exit();
@@ -158,6 +157,12 @@ public class BaseActivity extends FragmentActivity {
     }
 
     protected void exit() {
+        SharedPreferences settings = getSharedPreferences(
+                AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
+        Editor edit = settings.edit();
+        edit.putBoolean("is_study", true);
+        edit.commit();
+
         for (Activity activity : mActivitis) {
             activity.finish();
         }

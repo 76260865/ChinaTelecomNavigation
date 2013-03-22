@@ -108,7 +108,7 @@ public class JsonUtil {
         params.add(new BasicNameValuePair("opt", "auth"));
         // TODO:comment this
         params.add(new BasicNameValuePair("number", phoneNum));
-//         params.add(new BasicNameValuePair("number", "18980802828"));
+//         params.add(new BasicNameValuePair("number", "13308037770"));
         String customerResult = HttpUtil.doGet(CUSTOMER_URI, params);
 
         if (TextUtils.isEmpty(customerResult)) {
