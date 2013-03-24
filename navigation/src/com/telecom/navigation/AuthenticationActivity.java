@@ -51,13 +51,13 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     public boolean isMobileNO(CharSequence mobiles) {
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,//D])|(18[0,5-9]))//d{8}$");
+        Pattern p = Pattern.compile("^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$");
         Matcher m = p.matcher(mobiles);
-        return m.matches();
+        return m.find();
     }
 
     public void onBtnAuthClick(View v) {
-        if (TextUtils.isEmpty(mEditUserPhone.getText()) || isMobileNO(mEditUserPhone.getText())) {
+        if (TextUtils.isEmpty(mEditUserPhone.getText()) || !isMobileNO(mEditUserPhone.getText())) {
             Toast.makeText(this, R.string.str_format_input_phone, Toast.LENGTH_LONG).show();
             return;
         }
@@ -135,13 +135,12 @@ public class AuthenticationActivity extends BaseActivity {
                     || TextUtils.isEmpty(result.getUserName())) {
                 Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
                         Toast.LENGTH_LONG).show();
-//                return;
+                // return;
             }
 
             mLayoutInputNumber.setVisibility(View.GONE);
             mLayoutLinearAuth.setVisibility(View.VISIBLE);
-            mTxtMaster.setText(getString((R.string.str_format_master_info), result.getUserName(),
-                    result.getUserId()));
+            mTxtMaster.setText(getString((R.string.str_format_master_info), result.getUserName()));
         }
     }
 
