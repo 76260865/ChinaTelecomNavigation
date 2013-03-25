@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,7 +43,7 @@ public class BaseActivity extends FragmentActivity {
 
     protected static String mUserPhone;
 
-    protected static String mAppList;
+    protected static String mAppList = "";
 
     protected static String mDownloadUrl;
 
@@ -146,7 +147,7 @@ public class BaseActivity extends FragmentActivity {
         protected Boolean doInBackground(Void... params) {
             String resultStudy = HttpUtil.doGet("http://118.121.17.250/bass/AppRequest",
                     mParamsStudy);
-
+            Log.d("BaseActivity", "postStudy");
             return TextUtils.isEmpty(resultStudy);
         }
 
@@ -162,6 +163,7 @@ public class BaseActivity extends FragmentActivity {
         Editor edit = settings.edit();
         edit.putBoolean("is_study", true);
         edit.commit();
+        Log.d("BaseActivity", "exit:edit.putBoolean(...)");
 
         for (Activity activity : mActivitis) {
             activity.finish();

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.telecom.util.HttpUtil;
 
@@ -16,6 +18,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,14 +82,17 @@ public class EvaluateActivity extends BaseActivity {
         paramsReport
                 .add(new BasicNameValuePair("service_level", "" + (int) mRatingBar.getRating()));
 
-        List<BasicNameValuePair> paramsStudy = new ArrayList<BasicNameValuePair>();
-        paramsStudy.add(new BasicNameValuePair("opt", "study"));
-        paramsStudy.add(new BasicNameValuePair("prod_id", mProId));
-        paramsStudy.add(new BasicNameValuePair("imsi", mIMSI));
-        paramsStudy.add(new BasicNameValuePair("train_start_time", mDateFormat.format(mStartTime)));
-        paramsStudy.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
+        // List<BasicNameValuePair> paramsStudy = new
+        // ArrayList<BasicNameValuePair>();
+        // paramsStudy.add(new BasicNameValuePair("opt", "study"));
+        // paramsStudy.add(new BasicNameValuePair("prod_id", mProId));
+        // paramsStudy.add(new BasicNameValuePair("imsi", mIMSI));
+        // paramsStudy.add(new BasicNameValuePair("train_start_time",
+        // mDateFormat.format(mStartTime)));
+        // paramsStudy.add(new BasicNameValuePair("train_end_time",
+        // mDateFormat.format(mEndTime)));
 
-        new EvaluateTask(paramsReport, paramsStudy).execute();
+        new EvaluateTask(paramsReport).execute();
     }
 
     private class EvaluateTask extends AsyncTask<Void, Void, Boolean> {
@@ -94,25 +100,35 @@ public class EvaluateActivity extends BaseActivity {
         private List<BasicNameValuePair> mParamsReport;
         private List<BasicNameValuePair> mParamsStudy;
 
-        public EvaluateTask(List<BasicNameValuePair> paramsReport,
-                List<BasicNameValuePair> paramsStudy) {
+        public EvaluateTask(List<BasicNameValuePair> paramsReport) {
             mParamsReport = paramsReport;
-            mParamsStudy = paramsStudy;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            Log.d("Evaluate", "post report");
             String resultReport = HttpUtil.doGet("http://118.121.17.250/bass/AppRequest",
                     mParamsReport);
-            String resultStudy = HttpUtil.doGet("http://118.121.17.250/bass/AppRequest",
-                    mParamsStudy);
-
-            return TextUtils.isEmpty(resultReport) && TextUtils.isEmpty(resultStudy);
+            // String resultStudy =
+            // HttpUtil.doGet("http://118.121.17.250/bass/AppRequest",
+            // mParamsStudy);
+            if (!TextUtils.isEmpty(resultReport)) {
+                try {
+                    JSONObject object = new JSONObject(resultReport);
+                    if ("Success".equals(object.getString("Result"))) {
+                        return true;
+                    }
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return false;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (!result) {
+            if (result) {
                 mLinearRating.setVisibility(View.GONE);
                 mLinearBottom.setVisibility(View.VISIBLE);
                 mTxtTitle.setText(R.string.txt_thanks_evaluate);

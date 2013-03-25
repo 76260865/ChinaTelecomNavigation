@@ -117,8 +117,9 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
         mLayoutCategory = findViewById(R.id.layout_category);
         mLayoutDownladParent = findViewById(R.id.layout_download_parent);
-        mReceiver = new DownloadCompleteReceiver();
-        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        // mReceiver = new DownloadCompleteReceiver();
+        // registerReceiver(mReceiver, new
+        // IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 
@@ -273,8 +274,9 @@ public class AppliactionCategoryActivity extends BaseActivity {
                         ApkFileUtil.launchApp(getApplicationContext(), info.getPackageName());
                     } else if (info.isDownloadComplete()) {
                         ApkFileUtil.installApkFile(getApplicationContext(), info.getFilePath());
-                        mAppList += info.getAppId() + ",";
                     } else {
+                        Log.d("ApplicationCategoryAcitivity", "info.getAppId():" + info.getAppId());
+                        mAppList += info.getAppId() + ",";
                         downloadApk(position);
                     }
                 }
@@ -348,7 +350,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
 
                                 ApkFileUtil.installApkFile(getApplicationContext(),
                                         info.getFilePath());
-                                mAppList += info.getAppId() + ",";
+                                // mAppList += info.getAppId() + ",";
                                 break;
                             }
                         }
