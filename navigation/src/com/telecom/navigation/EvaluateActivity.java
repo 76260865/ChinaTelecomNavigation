@@ -77,8 +77,8 @@ public class EvaluateActivity extends BaseActivity {
         paramsReport.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
         paramsReport.add(new BasicNameValuePair("user_id", mUserId));
         paramsReport.add(new BasicNameValuePair("user_phone", mUserPhone));
-        paramsReport.add(new BasicNameValuePair("app_list", mAppList == null ? "0" : mAppList
-                .substring(0, mAppList.length() - 1)));
+        paramsReport.add(new BasicNameValuePair("app_list", TextUtils.isEmpty(mAppList) ? "0"
+                : mAppList.substring(0, mAppList.length() - 1)));
         paramsReport
                 .add(new BasicNameValuePair("service_level", "" + (int) mRatingBar.getRating()));
 
@@ -119,7 +119,6 @@ public class EvaluateActivity extends BaseActivity {
                         return true;
                     }
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -146,11 +145,12 @@ public class EvaluateActivity extends BaseActivity {
     }
 
     public void onBtnExitClick(View view) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        android.os.Process.killProcess(android.os.Process.myPid());
+        // Intent intent = new Intent(Intent.ACTION_MAIN);
+        // intent.addCategory(Intent.CATEGORY_HOME);
+        // intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // startActivity(intent);
+        // android.os.Process.killProcess(android.os.Process.myPid());
+        showDialog(0);
     }
 
     public void onBtbBackToMainClick(View view) {
