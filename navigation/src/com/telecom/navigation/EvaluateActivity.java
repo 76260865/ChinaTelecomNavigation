@@ -37,6 +37,8 @@ public class EvaluateActivity extends BaseActivity {
 
     private SimpleDateFormat mDateFormat;
 
+    private View btnSubmit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,8 @@ public class EvaluateActivity extends BaseActivity {
     }
 
     public void onBtnSubmitClick(View view) {
+        btnSubmit = view;
+        view.setEnabled(false);
         Toast.makeText(getApplicationContext(), R.string.msg_toast_submit, Toast.LENGTH_LONG)
                 .show();
         mEndTime = new Date();
@@ -140,6 +144,9 @@ public class EvaluateActivity extends BaseActivity {
             } else {
                 Toast.makeText(getApplicationContext(), R.string.msg_submit_error,
                         Toast.LENGTH_LONG).show();
+            }
+            if (btnSubmit != null) {
+                btnSubmit.setEnabled(true);
             }
         }
     }
