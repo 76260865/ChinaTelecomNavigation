@@ -37,6 +37,8 @@ public class EvaluateActivity extends BaseActivity {
 
     private SimpleDateFormat mDateFormat;
 
+    private View btnSubmit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,8 @@ public class EvaluateActivity extends BaseActivity {
     }
 
     public void onBtnSubmitClick(View view) {
+        btnSubmit = view;
+        view.setEnabled(false);
         Toast.makeText(getApplicationContext(), R.string.msg_toast_submit, Toast.LENGTH_LONG)
                 .show();
         mEndTime = new Date();
@@ -77,8 +81,8 @@ public class EvaluateActivity extends BaseActivity {
         paramsReport.add(new BasicNameValuePair("train_end_time", mDateFormat.format(mEndTime)));
         paramsReport.add(new BasicNameValuePair("user_id", mUserId));
         paramsReport.add(new BasicNameValuePair("user_phone", mUserPhone));
-        paramsReport.add(new BasicNameValuePair("app_list", mAppList == null ? "0" : mAppList
-                .substring(0, mAppList.length() - 1)));
+        paramsReport.add(new BasicNameValuePair("app_list", TextUtils.isEmpty(mAppList) ? "0"
+                : mAppList.substring(0, mAppList.length() - 1)));
         paramsReport
                 .add(new BasicNameValuePair("service_level", "" + (int) mRatingBar.getRating()));
 
@@ -119,7 +123,6 @@ public class EvaluateActivity extends BaseActivity {
                         return true;
                     }
                 } catch (JSONException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -141,6 +144,9 @@ public class EvaluateActivity extends BaseActivity {
             } else {
                 Toast.makeText(getApplicationContext(), R.string.msg_submit_error,
                         Toast.LENGTH_LONG).show();
+            }
+            if (btnSubmit != null) {
+                btnSubmit.setEnabled(true);
             }
         }
     }

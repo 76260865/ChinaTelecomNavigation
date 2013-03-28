@@ -51,7 +51,8 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     public boolean isMobileNO(CharSequence mobiles) {
-        Pattern p = Pattern.compile("^[1]([3][0-9]{1}|59|58|88|89)[0-9]{8}$");
+//        Pattern p = Pattern.compile("^[1]([3][0-9]{1}|59|58|80|88|89)[0-9]{8}$");
+        Pattern p = Pattern.compile("^[1][0-9]{10}$");
         Matcher m = p.matcher(mobiles);
         return m.find();
     }
@@ -135,7 +136,7 @@ public class AuthenticationActivity extends BaseActivity {
                     || TextUtils.isEmpty(result.getUserName())) {
                 Toast.makeText(getApplicationContext(), R.string.txt_toast_get_message_failed,
                         Toast.LENGTH_LONG).show();
-                // return;
+                 return;
             }
 
             mLayoutInputNumber.setVisibility(View.GONE);
