@@ -117,16 +117,16 @@ public class AdvertisementActivity extends BaseActivity {
         mActivitis.add(this);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
-        }
-        if (mDownloadId > -1l) {
-            mDownloadManager.remove(mDownloadId);
-        }
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        if (mReceiver != null) {
+//            unregisterReceiver(mReceiver);
+//        }
+//        if (mDownloadId > -1l) {
+//            mDownloadManager.remove(mDownloadId);
+//        }
+//        super.onDestroy();
+//    }
 
     protected void exit() {
         if (mReceiver != null) {
