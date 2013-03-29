@@ -129,12 +129,6 @@ public class AdvertisementActivity extends BaseActivity {
     }
 
     protected void exit() {
-        SharedPreferences settings = getSharedPreferences(
-                AdvertisementActivity.EXTRA_KEY_SHARE_PREF, Activity.MODE_PRIVATE);
-        Editor edit = settings.edit();
-        edit.putBoolean("is_study", true);
-        edit.commit();
-        Log.d("BaseActivity", "exit:edit.putBoolean(...)");
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
@@ -142,15 +136,7 @@ public class AdvertisementActivity extends BaseActivity {
             mDownloadManager.remove(mDownloadId);
         }
 
-        for (Activity activity : mActivitis) {
-            activity.finish();
-        }
-
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        android.os.Process.killProcess(android.os.Process.myPid());
+        finish();
     }
 
     class AdvertisementFragmentAdapter extends FragmentPagerAdapter {
