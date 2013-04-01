@@ -117,16 +117,16 @@ public class AdvertisementActivity extends BaseActivity {
         mActivitis.add(this);
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        if (mReceiver != null) {
-//            unregisterReceiver(mReceiver);
-//        }
-//        if (mDownloadId > -1l) {
-//            mDownloadManager.remove(mDownloadId);
-//        }
-//        super.onDestroy();
-//    }
+    // @Override
+    // protected void onDestroy() {
+    // if (mReceiver != null) {
+    // unregisterReceiver(mReceiver);
+    // }
+    // if (mDownloadId > -1l) {
+    // mDownloadManager.remove(mDownloadId);
+    // }
+    // super.onDestroy();
+    // }
 
     protected void exit() {
         if (mReceiver != null) {
@@ -232,7 +232,9 @@ public class AdvertisementActivity extends BaseActivity {
         down.setTitle(getString(R.string.download_title));
         mFileName = System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
-        down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, mFileName);
+        // down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+        // mFileName);
+        // down.setDestinationInExternalFilesDir(this, null, mFileName);
         // 将下载请求放入队列
         mDownloadId = mDownloadManager.enqueue(down);
     }
@@ -256,10 +258,19 @@ public class AdvertisementActivity extends BaseActivity {
                                 .show();
                         Log.d(TAG, " download complete! id : " + downId);
 
-                        File path = Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        String realPath = new File(path, mFileName).getPath();
-                        ApkFileUtil.installApkFile(getApplicationContext(), realPath);
+                        // File path = Environment
+                        // .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        // String st = cursor.getString(cursor
+                        // .getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                        String st = cursor.getString(cursor
+                                .getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                        Log.d("xxxxx", "uri:" + st);
+                        // File path = context.getExternalFilesDir(null);
+                        // String realPath = new File(path,
+                        // mFileName).getPath();
+                        ApkFileUtil.installApkFile(getApplicationContext(), st);
+                        // ApkFileUtil.installApkFileFromUri(getApplicationContext(),
+                        // Uri.parse(st));
                         break;
                     }
                     case DownloadManager.STATUS_FAILED: {

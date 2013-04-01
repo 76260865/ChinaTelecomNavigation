@@ -299,7 +299,9 @@ public class AppliactionCategoryActivity extends BaseActivity {
         down.setTitle(info.getAppName());
         info.fileName = info.getAppId() + System.currentTimeMillis() + ".apk";
         // 设置下载后文件存放的位置
-        down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, info.fileName);
+        // down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+        // info.fileName);
+//        down.setDestinationInExternalFilesDir(this, null, info.fileName);
 
         if (info.getDownloadId() > 0) {
             mDownloadManager.remove(info.getDownloadId());
@@ -333,13 +335,21 @@ public class AppliactionCategoryActivity extends BaseActivity {
                         for (AppInfo info : mAllAppInfoList) {
                             if (info.getDownloadId() == downId) {
                                 info.setDownloadComplete(true);
-                                File path = Environment
-                                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                                String realPath = new File(path, info.fileName).getPath();
 
-                                Log.d(TAG, realPath);
+                                String st = cursor.getString(cursor
+                                        .getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME));
+                                Log.d("xxxxx", "uri:" + st);
 
-                                info.setFilePath(realPath);
+                                // File path = Environment
+                                // .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                                // File path =
+                                // context.getExternalFilesDir(null);
+                                // String realPath = new File(path,
+                                // info.fileName).getPath();
+                                //
+                                // Log.d(TAG, realPath);
+
+                                info.setFilePath(st);
                                 PackageInfo packageInfo = ApkFileUtil.getPackageInfo(
                                         getApplicationContext(), info.getFilePath());
                                 Log.d(TAG, "packageInfo:" + packageInfo);
@@ -348,8 +358,9 @@ public class AppliactionCategoryActivity extends BaseActivity {
                                     info.setPackageName(packageInfo.packageName);
                                 }
 
-                                ApkFileUtil.installApkFile(getApplicationContext(),
-                                        info.getFilePath());
+                                ApkFileUtil.installApkFile(getApplicationContext(), st);
+                                // ApkFileUtil.installApkFile(getApplicationContext(),
+                                // info.getFilePath());
                                 // mAppList += info.getAppId() + ",";
                                 break;
                             }

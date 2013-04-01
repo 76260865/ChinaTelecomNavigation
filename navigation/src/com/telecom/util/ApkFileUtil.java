@@ -67,4 +67,11 @@ public class ApkFileUtil {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+    public static void installApkFileFromUri(Context context, Uri appPath) {
+        Intent intent = new Intent();
+        intent.setDataAndType(appPath, "application/vnd.android.package-archive");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 }
