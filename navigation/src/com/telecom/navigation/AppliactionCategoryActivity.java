@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,6 +31,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,15 +64,17 @@ public class AppliactionCategoryActivity extends BaseActivity {
     // Use 2M memory for this memory cache.
     private static final int cacheSize = 1024 * 1024 * 2;
 
-    protected final int[] CONTENT = new int[] { R.drawable.ic_type1, R.drawable.ic_type2,
-            R.drawable.ic_type3, R.drawable.ic_type4, R.drawable.ic_type5, R.drawable.ic_type6,
+    protected final int[] CONTENT = new int[] { R.drawable.ic_type5, R.drawable.ic_type1,
+            R.drawable.ic_type2, R.drawable.ic_type3, R.drawable.ic_type4, R.drawable.ic_type6,
             R.drawable.ic_type7, R.drawable.ic_type8 };
 
-    protected final int[] BACKGROUND = new int[] { R.drawable.ic_type1_background,
-            R.drawable.ic_type2_background, R.drawable.ic_type3_background,
-            R.drawable.ic_type4_background, R.drawable.ic_type5_background,
+    protected final int[] BACKGROUND = new int[] { R.drawable.ic_type5_background,
+            R.drawable.ic_type1_background, R.drawable.ic_type2_background,
+            R.drawable.ic_type3_background, R.drawable.ic_type4_background,
             R.drawable.ic_type6_background, R.drawable.ic_type7_background,
             R.drawable.ic_type8_background };
+
+    private SparseIntArray maps = new SparseIntArray();
 
     private View mLayoutCategory;
     private View mLayoutDownladParent;
@@ -95,6 +99,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
     private ProgressDialog mProgressDialog;
 
     private ArrayList<Long> mDownloadIds = new ArrayList<Long>();
+
     private int mIndex = 0;
 
     @Override
@@ -105,6 +110,8 @@ public class AppliactionCategoryActivity extends BaseActivity {
         setContentView(R.layout.application_category_layout);
 
         mLayoutInflater = LayoutInflater.from(this);
+
+        initMap();
 
         mBitmapCache = new LruCache<Integer, Bitmap>(cacheSize);
 
@@ -132,6 +139,17 @@ public class AppliactionCategoryActivity extends BaseActivity {
         mLayoutDetail = findViewById(R.id.layout_detail);
         mReceiver = new DownloadCompleteReceiver();
         registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    private void initMap() {
+        maps.put(R.drawable.ic_type1, 1);
+        maps.put(R.drawable.ic_type2, 2);
+        maps.put(R.drawable.ic_type3, 3);
+        maps.put(R.drawable.ic_type4, 4);
+        maps.put(R.drawable.ic_type5, 5);
+        maps.put(R.drawable.ic_type6, 6);
+        maps.put(R.drawable.ic_type7, 7);
+        maps.put(R.drawable.ic_type8, 8);
     }
 
     @Override
@@ -301,7 +319,7 @@ public class AppliactionCategoryActivity extends BaseActivity {
         // 设置下载后文件存放的位置
         // down.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
         // info.fileName);
-//        down.setDestinationInExternalFilesDir(this, null, info.fileName);
+        // down.setDestinationInExternalFilesDir(this, null, info.fileName);
 
         if (info.getDownloadId() > 0) {
             mDownloadManager.remove(info.getDownloadId());
@@ -522,7 +540,8 @@ public class AppliactionCategoryActivity extends BaseActivity {
                     // show the download layout:
                     mLayoutCategory.setVisibility(View.GONE);
                     mLayoutDownladParent.setVisibility(View.VISIBLE);
-                    new AppListDownloadTask(position + 1).execute();
+
+                    new AppListDownloadTask(maps.get(CONTENT[position])).execute();
                     mIndex++;
                 }
             });
